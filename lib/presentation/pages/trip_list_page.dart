@@ -39,7 +39,7 @@ class TripListPage extends ConsumerWidget {
                       trailing: IconButton(
                         icon: const Icon(Icons.delete),
                         onPressed: () {
-                          // TODO: Implement delete functionality
+ TODO: Implement delete functionality
                         },
                       ),
                     ),

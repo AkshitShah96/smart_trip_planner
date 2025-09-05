@@ -91,7 +91,6 @@ class _ChatPageState extends ConsumerState<ChatPage> {
     final messages = chatState.messages;
     final isLoading = chatState.isLoading;
 
-    // Scroll to bottom when new messages arrive
     ref.listen(chatProvider, (previous, next) {
       if (previous?.messages.length != next.messages.length) {
         _scrollToBottom();
@@ -126,7 +125,6 @@ class _ChatPageState extends ConsumerState<ChatPage> {
               ),
             ],
           ),
-          // Token usage overlay
           TokenUsageOverlay(
             requestTokens: tokenUsageState.currentSession.requestTokens,
             responseTokens: tokenUsageState.currentSession.responseTokens,

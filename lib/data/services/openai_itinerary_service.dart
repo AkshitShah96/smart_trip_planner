@@ -7,7 +7,7 @@ import '../models/day_plan.dart';
 import '../models/day_item.dart';
 
 class OpenAIItineraryService {
-  static const String _baseUrl = 'https://api.openai.com/v1';
+  static const String _baseUrl = 'https:api.openai.com/v1';
   static const String _endpoint = '/chat/completions';
   
   final Dio _dio;
@@ -27,7 +27,6 @@ class OpenAIItineraryService {
     _dio.options.receiveTimeout = const Duration(seconds: 60);
   }
 
-  /// Generates an itinerary from a user prompt using OpenAI's API
   Future<Itinerary> generateItinerary(String userPrompt) async {
     try {
       final response = await _dio.post(
@@ -47,10 +46,9 @@ class OpenAIItineraryService {
     }
   }
 
-  /// Builds the request payload for OpenAI API
   Map<String, dynamic> _buildRequestPayload(String userPrompt) {
     return {
-      'model': 'gpt-4o-mini', // Using GPT-4o-mini for cost efficiency
+      'model': 'gpt-4o-mini',
       'messages': [
         {
           'role': 'system',
@@ -67,7 +65,6 @@ class OpenAIItineraryService {
     };
   }
 
-  /// System prompt that instructs the AI to return structured JSON
   String _getSystemPrompt() {
     return '''
 You are a professional travel planner. Generate a detailed itinerary in the following JSON format:
@@ -105,7 +102,6 @@ Guidelines:
 ''';
   }
 
-  /// Parses the OpenAI response into an Itinerary model
   Itinerary _parseResponse(Map<String, dynamic> responseData) {
     try {
       final choices = responseData['choices'] as List<dynamic>?;
@@ -123,7 +119,6 @@ Guidelines:
         throw InvalidJsonError('Empty content in response');
       }
 
-      // Parse the JSON content
       final Map<String, dynamic> itineraryJson;
       try {
         itineraryJson = json.decode(content) as Map<String, dynamic>;
@@ -131,7 +126,6 @@ Guidelines:
         throw InvalidJsonError('Failed to parse JSON content: ${e.toString()}');
       }
 
-      // Validate and create Itinerary model
       return _createItineraryFromJson(itineraryJson);
     } catch (e) {
       if (e is ItineraryError) {
@@ -141,10 +135,8 @@ Guidelines:
     }
   }
 
-  /// Creates an Itinerary model from parsed JSON with validation
   Itinerary _createItineraryFromJson(Map<String, dynamic> json) {
     try {
-      // Validate required fields
       final title = json['title'] as String?;
       final startDate = json['startDate'] as String?;
       final endDate = json['endDate'] as String?;
@@ -163,14 +155,12 @@ Guidelines:
         throw InvalidItineraryError('Missing or empty days array');
       }
 
-      // Create the itinerary
       final itinerary = Itinerary(
         title: title,
         startDate: startDate,
         endDate: endDate,
       );
 
-      // Parse and add days
       for (final dayJson in days) {
         if (dayJson is! Map<String, dynamic>) {
           throw InvalidItineraryError('Invalid day structure');
@@ -189,7 +179,6 @@ Guidelines:
     }
   }
 
-  /// Creates a DayPlan model from JSON
   DayPlan _createDayPlanFromJson(Map<String, dynamic> json) {
     final date = json['date'] as String?;
     final summary = json['summary'] as String?;
@@ -210,7 +199,6 @@ Guidelines:
       summary: summary,
     );
 
-    // Parse and add items
     for (final itemJson in items) {
       if (itemJson is! Map<String, dynamic>) {
         throw InvalidItineraryError('Invalid item structure');
@@ -223,7 +211,6 @@ Guidelines:
     return dayPlan;
   }
 
-  /// Creates a DayItem model from JSON
   DayItem _createDayItemFromJson(Map<String, dynamic> json) {
     final time = json['time'] as String?;
     final activity = json['activity'] as String?;
@@ -246,7 +233,6 @@ Guidelines:
     );
   }
 
-  /// Handles Dio-specific errors
   ItineraryError _handleDioError(DioException error) {
     switch (error.type) {
       case DioExceptionType.connectionTimeout:
@@ -274,7 +260,6 @@ Guidelines:
     }
   }
 
-  /// Handles HTTP status code errors
   ItineraryError _handleHttpError(int? statusCode, dynamic responseData) {
     switch (statusCode) {
       case 401:

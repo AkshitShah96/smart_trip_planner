@@ -6,18 +6,18 @@ import '../../domain/usecases/get_all_trips.dart';
 import '../../domain/usecases/save_trip.dart';
 import '../../domain/entities/trip.dart';
 
-// Data source provider
+ Data source provider
 final tripLocalDataSourceProvider = Provider<TripLocalDataSource>((ref) {
   return TripLocalDataSourceImpl();
 });
 
-// Repository provider
+ Repository provider
 final tripRepositoryProvider = Provider<TripRepository>((ref) {
   final localDataSource = ref.watch(tripLocalDataSourceProvider);
   return TripRepositoryImpl(localDataSource: localDataSource);
 });
 
-// Use case providers
+ Use case providers
 final getAllTripsProvider = Provider<GetAllTrips>((ref) {
   final repository = ref.watch(tripRepositoryProvider);
   return GetAllTrips(repository);
@@ -28,7 +28,7 @@ final saveTripProvider = Provider<SaveTrip>((ref) {
   return SaveTrip(repository);
 });
 
-// State providers
+ State providers
 final tripsProvider = FutureProvider<List<Trip>>((ref) async {
   final getAllTrips = ref.watch(getAllTripsProvider);
   return await getAllTrips();
@@ -61,7 +61,7 @@ class TripListNotifier extends StateNotifier<AsyncValue<List<Trip>>> {
   Future<void> addTrip(Trip trip) async {
     try {
       await _saveTrip(trip);
-      await loadTrips(); // Reload the list
+      await loadTrips();  Reload the list
     } catch (error, stackTrace) {
       state = AsyncValue.error(error, stackTrace);
     }

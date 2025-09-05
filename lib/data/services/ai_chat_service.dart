@@ -40,33 +40,30 @@ class MockAIChatService implements AIChatService {
   }
 }
 
-// Future implementation for OpenAI/Gemini API
 class OpenAIChatService implements AIChatService {
-  // TODO: Implement OpenAI API integration
   @override
   Stream<String> streamResponse(String userMessage) async* {
-    // Implementation for OpenAI streaming API
     throw UnimplementedError('OpenAI integration not implemented yet');
   }
 
   @override
   Future<String> getResponse(String userMessage) async {
-    // Implementation for OpenAI API
+ Implementation for OpenAI API
     throw UnimplementedError('OpenAI integration not implemented yet');
   }
 }
 
 class GeminiChatService implements AIChatService {
-  // TODO: Implement Gemini API integration
+ TODO: Implement Gemini API integration
   @override
   Stream<String> streamResponse(String userMessage) async* {
-    // Implementation for Gemini streaming API
+ Implementation for Gemini streaming API
     throw UnimplementedError('Gemini integration not implemented yet');
   }
 
   @override
   Future<String> getResponse(String userMessage) async {
-    // Implementation for Gemini API
+ Implementation for Gemini API
     throw UnimplementedError('Gemini integration not implemented yet');
   }
 }

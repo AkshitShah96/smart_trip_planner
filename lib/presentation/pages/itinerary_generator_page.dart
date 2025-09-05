@@ -248,7 +248,6 @@ class _ItineraryGeneratorPageState extends ConsumerState<ItineraryGeneratorPage>
   }
 
   void _saveItinerary(WidgetRef ref, data_model.Itinerary dataItinerary) {
-    // Convert data model to domain model
     final domainItinerary = domain.Itinerary(
       title: dataItinerary.title,
       startDate: dataItinerary.startDate,
@@ -268,18 +267,14 @@ class _ItineraryGeneratorPageState extends ConsumerState<ItineraryGeneratorPage>
       }).toList(),
     );
 
-    // Save to repository
     ref.read(savedItinerariesProvider.notifier).saveItinerary(domainItinerary);
 
-    // Show success message
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text('Itinerary "${domainItinerary.title}" saved successfully!'),
         action: SnackBarAction(
           label: 'View',
           onPressed: () {
-            // Navigate to home screen to see saved itinerary
-            // This would require updating the navigation state
           },
         ),
       ),

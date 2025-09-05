@@ -18,7 +18,7 @@ class ItineraryDetailScreen extends StatefulWidget {
 }
 
 class _ItineraryDetailScreenState extends State<ItineraryDetailScreen> {
-  final Set<int> _expandedDays = {0}; // First day expanded by default
+  final Set<int> _expandedDays = {0};
 
   @override
   Widget build(BuildContext context) {
@@ -150,7 +150,6 @@ class _ItineraryDetailScreenState extends State<ItineraryDetailScreen> {
     if (widget.itinerary.days.isNotEmpty && widget.itinerary.days.first.items.isNotEmpty) {
       final firstLocation = widget.itinerary.days.first.items.first.location;
       if (firstLocation.contains(',')) {
-        // Extract city name from coordinates or address
         return firstLocation.split(',')[0].trim();
       }
       return firstLocation;
@@ -199,7 +198,6 @@ class _ItineraryDetailScreenState extends State<ItineraryDetailScreen> {
       ),
       child: Column(
         children: [
-          // Header - always visible
           Material(
             color: Colors.transparent,
             child: InkWell(
@@ -275,7 +273,6 @@ class _ItineraryDetailScreenState extends State<ItineraryDetailScreen> {
               ),
             ),
           ),
-          // Collapsible content
           if (isExpanded) ...[
             const Divider(height: 1, color: AppTheme.mediumGray),
             Padding(
@@ -448,7 +445,6 @@ class _ItineraryDetailScreenState extends State<ItineraryDetailScreen> {
   }
 
   void _openAllLocationsInMap(BuildContext context) async {
-    // Get the first location with coordinates to open the map
     String? firstLocation;
     for (final day in widget.itinerary.days) {
       for (final item in day.items) {
@@ -479,7 +475,6 @@ class _ItineraryDetailScreenState extends State<ItineraryDetailScreen> {
   }
 
   void _shareItinerary(BuildContext context) {
-    // TODO: Implement sharing functionality
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: const Text('Sharing functionality coming soon!'),

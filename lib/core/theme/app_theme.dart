@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 class AppTheme {
-  // Travel-themed color palette
   static const Color primaryBlue = Color(0xFF2196F3);
   static const Color lightBlue = Color(0xFFE3F2FD);
   static const Color darkBlue = Color(0xFF1976D2);
@@ -25,7 +24,6 @@ class AppTheme {
         primary: primaryBlue,
         secondary: accentOrange,
         surface: white,
-        // background is deprecated in recent versions; surface is used instead
         error: errorRed,
       ),
       appBarTheme: const AppBarTheme(
@@ -201,7 +199,6 @@ class AppTheme {
     );
   }
 
-  // Custom shadows for cards
   static List<BoxShadow> get cardShadow => [
     BoxShadow(
       color: Colors.black.withValues(alpha: 0.08),
@@ -218,7 +215,6 @@ class AppTheme {
     ),
   ];
 
-  // Gradient backgrounds
   static const LinearGradient primaryGradient = LinearGradient(
     colors: [primaryBlue, darkBlue],
     begin: Alignment.topLeft,

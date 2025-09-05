@@ -22,7 +22,7 @@ class DayPlan {
       summary: json['summary'] as String,
     );
 
-    // Add items if they exist
+ Add items if they exist
     if (json['items'] != null) {
       final itemsList = json['items'] as List<dynamic>;
       for (final itemJson in itemsList) {

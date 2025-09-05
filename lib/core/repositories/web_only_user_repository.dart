@@ -106,7 +106,6 @@ class WebOnlyUserRepository {
       html.window.localStorage.remove(_usersKey);
       _nextId = 1;
     } catch (e) {
-      // Error handling
     }
   }
 

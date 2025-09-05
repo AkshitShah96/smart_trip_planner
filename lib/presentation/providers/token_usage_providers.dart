@@ -1,7 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../widgets/token_usage_overlay.dart';
 
-// State for token usage tracking
 class TokenUsageState {
   final TokenUsageData currentSession;
   final TokenUsageData totalUsage;
@@ -30,11 +29,9 @@ class TokenUsageState {
   }
 }
 
-// Notifier for token usage
 class TokenUsageNotifier extends StateNotifier<TokenUsageState> {
   TokenUsageNotifier() : super(const TokenUsageState());
 
-  /// Add tokens from a request/response
   void addTokenUsage(int requestTokens, int responseTokens) {
     final newUsage = TokenUsageData(
       requestTokens: requestTokens,
@@ -48,14 +45,12 @@ class TokenUsageNotifier extends StateNotifier<TokenUsageState> {
     );
   }
 
-  /// Reset current session tokens
   void resetCurrentSession() {
     state = state.copyWith(
       currentSession: const TokenUsageData(requestTokens: 0, responseTokens: 0, totalTokens: 0),
     );
   }
 
-  /// Reset all token usage
   void resetAllUsage() {
     state = state.copyWith(
       currentSession: const TokenUsageData(requestTokens: 0, responseTokens: 0, totalTokens: 0),
@@ -63,29 +58,25 @@ class TokenUsageNotifier extends StateNotifier<TokenUsageState> {
     );
   }
 
-  /// Toggle overlay visibility
   void toggleOverlay() {
     state = state.copyWith(
       isOverlayVisible: !state.isOverlayVisible,
     );
   }
 
-  /// Set overlay visibility
   void setOverlayVisible(bool visible) {
     state = state.copyWith(
       isOverlayVisible: visible,
     );
   }
 
-  /// Toggle debug mode
   void toggleDebugMode() {
     state = state.copyWith(
       isDebugMode: !state.isDebugMode,
-      isOverlayVisible: !state.isDebugMode, // Show overlay when debug mode is on
+      isOverlayVisible: !state.isDebugMode,
     );
   }
 
-  /// Set debug mode
   void setDebugMode(bool enabled) {
     state = state.copyWith(
       isDebugMode: enabled,
@@ -94,12 +85,10 @@ class TokenUsageNotifier extends StateNotifier<TokenUsageState> {
   }
 }
 
-// Provider for token usage state
 final tokenUsageProvider = StateNotifierProvider<TokenUsageNotifier, TokenUsageState>((ref) {
   return TokenUsageNotifier();
 });
 
-// Convenience providers
 final currentSessionTokensProvider = Provider<TokenUsageData>((ref) {
   return ref.watch(tokenUsageProvider).currentSession;
 });

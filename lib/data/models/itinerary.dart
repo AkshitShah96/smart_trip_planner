@@ -26,7 +26,7 @@ class Itinerary {
       endDate: json['endDate'] as String,
     );
 
-    // Add days if they exist
+ Add days if they exist
     if (json['days'] != null) {
       final daysList = json['days'] as List<dynamic>;
       for (final dayJson in daysList) {

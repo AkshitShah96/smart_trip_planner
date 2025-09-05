@@ -3,12 +3,10 @@ import '../../domain/entities/itinerary.dart';
 import '../../domain/repositories/itinerary_repository.dart';
 import '../../data/repositories/itinerary_repository_impl.dart';
 
-// Repository provider
 final itineraryRepositoryProvider = Provider<ItineraryRepository>((ref) {
   return ItineraryRepositoryImpl();
 });
 
-// State for saved itineraries
 class SavedItinerariesState {
   final List<Itinerary> itineraries;
   final bool isLoading;
@@ -33,7 +31,6 @@ class SavedItinerariesState {
   }
 }
 
-// Notifier for saved itineraries
 class SavedItinerariesNotifier extends StateNotifier<SavedItinerariesState> {
   final ItineraryRepository _repository;
 
@@ -62,7 +59,7 @@ class SavedItinerariesNotifier extends StateNotifier<SavedItinerariesState> {
   Future<void> saveItinerary(Itinerary itinerary) async {
     try {
       await _repository.saveItinerary(itinerary);
-      await loadItineraries(); // Reload the list
+      await loadItineraries();
     } catch (e) {
       state = state.copyWith(
         error: 'Failed to save itinerary: ${e.toString()}',
@@ -73,7 +70,7 @@ class SavedItinerariesNotifier extends StateNotifier<SavedItinerariesState> {
   Future<void> deleteItinerary(int id) async {
     try {
       await _repository.deleteItinerary(id);
-      await loadItineraries(); // Reload the list
+      await loadItineraries();
     } catch (e) {
       state = state.copyWith(
         error: 'Failed to delete itinerary: ${e.toString()}',
@@ -97,13 +94,11 @@ class SavedItinerariesNotifier extends StateNotifier<SavedItinerariesState> {
   }
 }
 
-// Provider for saved itineraries
 final savedItinerariesProvider = StateNotifierProvider<SavedItinerariesNotifier, SavedItinerariesState>((ref) {
   final repository = ref.watch(itineraryRepositoryProvider);
   return SavedItinerariesNotifier(repository);
 });
 
-// Convenience providers
 final itinerariesListProvider = Provider<List<Itinerary>>((ref) {
   return ref.watch(savedItinerariesProvider).itineraries;
 });

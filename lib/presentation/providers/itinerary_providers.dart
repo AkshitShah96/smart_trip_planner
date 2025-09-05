@@ -4,23 +4,19 @@ import '../../core/errors/itinerary_errors.dart';
 import '../../data/services/openai_itinerary_service.dart';
 import '../../data/models/itinerary.dart';
 
-// Provider for OpenAI service
 final openaiServiceProvider = Provider<OpenAIItineraryService?>((ref) {
   try {
     final apiKey = ApiConfig.requiredOpenAIKey;
     return OpenAIItineraryService(apiKey: apiKey);
   } catch (e) {
-    // Return null if API key is not configured
     return null;
   }
 });
 
-// Provider for checking if OpenAI is configured
 final isOpenAIConfiguredProvider = Provider<bool>((ref) {
   return ApiConfig.isOpenAIConfigured;
 });
 
-// State for itinerary generation
 class ItineraryGenerationState {
   final Itinerary? itinerary;
   final bool isLoading;
@@ -45,13 +41,11 @@ class ItineraryGenerationState {
   }
 }
 
-// Notifier for itinerary generation
 class ItineraryGenerationNotifier extends StateNotifier<ItineraryGenerationState> {
   final OpenAIItineraryService? _openaiService;
 
   ItineraryGenerationNotifier(this._openaiService) : super(const ItineraryGenerationState());
 
-  /// Generates an itinerary from a user prompt
   Future<void> generateItinerary(String prompt) async {
     final service = _openaiService;
     if (service == null) {
@@ -87,19 +81,16 @@ class ItineraryGenerationNotifier extends StateNotifier<ItineraryGenerationState
     }
   }
 
-  /// Clears the current state
   void clearState() {
     state = const ItineraryGenerationState();
   }
 }
 
-// Provider for itinerary generation
 final itineraryGenerationProvider = StateNotifierProvider<ItineraryGenerationNotifier, ItineraryGenerationState>((ref) {
   final openaiService = ref.watch(openaiServiceProvider);
   return ItineraryGenerationNotifier(openaiService);
 });
 
-// Convenience providers
 final currentItineraryProvider = Provider<Itinerary?>((ref) {
   return ref.watch(itineraryGenerationProvider).itinerary;
 });
