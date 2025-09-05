@@ -23,7 +23,7 @@ class TokenUsageOverlay extends StatelessWidget {
     final theme = Theme.of(context);
     
     return Positioned(
-      top: 100,  Below the app bar
+      top: 100,
       right: 16,
       child: GestureDetector(
         onTap: onToggle,
@@ -120,7 +120,6 @@ class TokenUsageOverlay extends StatelessWidget {
   }
 
   Widget _buildCostEstimate(ThemeData theme) {
- Rough estimate: GPT-4o-mini costs ~$0.00015 per 1K input tokens and ~$0.0006 per 1K output tokens
     final inputCost = (requestTokens / 1000) * 0.00015;
     final outputCost = (responseTokens / 1000) * 0.0006;
     final totalCost = inputCost + outputCost;

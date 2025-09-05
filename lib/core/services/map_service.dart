@@ -42,7 +42,6 @@ class MapService {
       if (await openGoogleMaps(latitude, longitude)) {
         return true;
       }
- Fallback to generic maps URL
       return await _launchUrl('geo:$latitude,$longitude');
     }
   }
@@ -57,12 +56,10 @@ class MapService {
       }
     }
     
- Fallback to Google Maps
     final String googleMapsUrl = 'https:www.google.com/maps/search/?api=1&query=$encodedAddress';
     return await _launchUrl(googleMapsUrl);
   }
 
-/ Launches a URL
   static Future<bool> _launchUrl(String url) async {
     try {
       final Uri uri = Uri.parse(url);
@@ -76,14 +73,11 @@ class MapService {
     }
   }
 
-/ Checks if the location string is in coordinate format (lat,lng)
   static bool _isCoordinateFormat(String location) {
- Check for patterns like "34.9671,135.7727" or "34.9671, 135.7727"
     final RegExp coordPattern = RegExp(r'^-?\d+\.?\d*,\s*-?\d+\.?\d*$');
     return coordPattern.hasMatch(location.trim());
   }
 
-/ Parses coordinates from a string
   static Coordinates? _parseCoordinates(String location) {
     try {
       final parts = location.split(',');
@@ -99,7 +93,6 @@ class MapService {
   }
 }
 
-/ Simple class to hold coordinates
 class Coordinates {
   final double latitude;
   final double longitude;
