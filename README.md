@@ -91,21 +91,16 @@ lib/
 3. Commit your changes (`git commit -m 'Add some amazing feature'`)
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
-
 ## License 📄
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## Contact 📧
 
-- **Developer**: Your Name
-- **Email**: your.email@example.com
-- **GitHub**: [@yourusername](https://github.com/yourusername)
+- **Developer**: Akshit Shah
+- **Email**: akshit.shah@example.com
+- **GitHub**: [@AkshitShah96](https://github.com/AkshitShah96)
 
 ---
 
 Made with ❤️ using Flutter
-=======
-# smart_trip_planner
-A modern Flutter app for planning trips with AI assistance
->>>>>>> cb20237df04054d8a0f8de90c6c8e5f7496d0e35
