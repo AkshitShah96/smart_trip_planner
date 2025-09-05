@@ -163,11 +163,7 @@ The application features a modern, professional interface with:
 
 This project is licensed under the MIT License. See the LICENSE file for details.
 
-## Contact
 
-**Developer**: Akshit Shah  
-**Email**: akshit.shah@example.com  
-**GitHub**: [@AkshitShah96](https://github.com/AkshitShah96)
 
 ---
 
