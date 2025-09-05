@@ -7,10 +7,13 @@ class DayItem {
 
   late String location;
 
+  Map<String, dynamic>? additionalInfo;
+
   DayItem({
     required this.time,
     required this.activity,
     required this.location,
+    this.additionalInfo,
   });
 
   DayItem.empty();
@@ -20,6 +23,7 @@ class DayItem {
       time: json['time'] as String,
       activity: json['activity'] as String,
       location: json['location'] as String,
+      additionalInfo: json['additionalInfo'] as Map<String, dynamic>?,
     );
   }
 
@@ -29,6 +33,7 @@ class DayItem {
       'time': time,
       'activity': activity,
       'location': location,
+      'additionalInfo': additionalInfo,
     };
   }
 

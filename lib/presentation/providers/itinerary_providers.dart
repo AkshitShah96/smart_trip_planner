@@ -3,6 +3,7 @@ import '../../core/config/api_config.dart';
 import '../../core/errors/itinerary_errors.dart';
 import '../../data/services/openai_itinerary_service.dart';
 import '../../data/models/itinerary.dart';
+import '../../core/services/agent_service.dart';
 
 final openaiServiceProvider = Provider<OpenAIItineraryService?>((ref) {
   try {
@@ -14,7 +15,8 @@ final openaiServiceProvider = Provider<OpenAIItineraryService?>((ref) {
 });
 
 final isOpenAIConfiguredProvider = Provider<bool>((ref) {
-  return ApiConfig.isOpenAIConfigured;
+  // Always return true to enable demo mode
+  return true;
 });
 
 class ItineraryGenerationState {
@@ -47,22 +49,26 @@ class ItineraryGenerationNotifier extends StateNotifier<ItineraryGenerationState
   ItineraryGenerationNotifier(this._openaiService) : super(const ItineraryGenerationState());
 
   Future<void> generateItinerary(String prompt) async {
-    final service = _openaiService;
-    if (service == null) {
-      state = state.copyWith(
-        error: const AuthenticationError('OpenAI API key not configured'),
-        isLoading: false,
-      );
-      return;
-    }
-
     state = state.copyWith(
       isLoading: true,
       error: null,
     );
 
     try {
-      final itinerary = await service.generateItinerary(prompt);
+      Itinerary itinerary;
+      
+      if (_openaiService != null) {
+        // Use real OpenAI service if available
+        itinerary = await _openaiService!.generateItinerary(prompt);
+      } else {
+        // Use mock service for demo mode
+        final mockService = AgentServiceFactory.createMockService();
+        itinerary = await mockService.generateItinerary(
+          userInput: prompt,
+          chatHistory: const [],
+        );
+      }
+      
       state = state.copyWith(
         itinerary: itinerary,
         isLoading: false,

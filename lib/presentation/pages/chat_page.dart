@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../providers/chat_providers.dart';
 import '../providers/token_usage_providers.dart';
-import '../widgets/chat_bubble.dart';
 import '../widgets/chat_input_field.dart';
 import '../widgets/token_usage_overlay.dart';
+import '../widgets/chat_message_widget.dart';
 import '../../core/theme/app_theme.dart';
+import '../../core/providers/chat_provider.dart';
+import '../../core/models/chat_streaming_models.dart';
+import '../../core/models/itinerary_change.dart';
+import '../../presentation/widgets/itinerary_diff_widget.dart';
 
 class ChatPage extends ConsumerStatefulWidget {
   const ChatPage({super.key});
@@ -89,7 +92,7 @@ class _ChatPageState extends ConsumerState<ChatPage> {
     final chatState = ref.watch(chatProvider);
     final tokenUsageState = ref.watch(tokenUsageProvider);
     final messages = chatState.messages;
-    final isLoading = chatState.isLoading;
+    final isStreaming = chatState.isStreaming;
 
     ref.listen(chatProvider, (previous, next) {
       if (previous?.messages.length != next.messages.length) {
@@ -113,15 +116,18 @@ class _ChatPageState extends ConsumerState<ChatPage> {
                         itemCount: messages.length,
                         itemBuilder: (context, index) {
                           final message = messages[index];
-                          return ChatBubble(message: message);
+                          return ChatMessageWidget(
+                            message: message,
+                            onItineraryTap: () => _showItineraryDetails(context, message),
+                          );
                         },
                       ),
               ),
               ChatInputField(
                 onSendMessage: (message) {
-                  ref.read(chatProvider.notifier).addUserMessage(message);
+                  ref.read(chatProvider.notifier).sendMessage(message);
                 },
-                isLoading: isLoading,
+                isLoading: isStreaming,
               ),
             ],
           ),
@@ -246,6 +252,157 @@ class _ChatPageState extends ConsumerState<ChatPage> {
               fontSize: 14,
               color: AppTheme.textPrimary,
             ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showItineraryDetails(BuildContext context, StreamingChatMessage message) {
+    if (message.itinerary == null) return;
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(message.itinerary!.title),
+        content: SizedBox(
+          width: double.maxFinite,
+          height: 500,
+          child: message.hasChanges && message.diff != null
+              ? ItineraryDiffWidget(
+                  diffResult: ItineraryDiffResult(
+                    itinerary: message.itinerary!,
+                    diff: message.diff,
+                    hasChanges: message.hasChanges,
+                  ),
+                  showChangeDetails: true,
+                  onAcceptChanges: () {
+                    Navigator.of(context).pop();
+                    // Handle accepting changes
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Changes accepted!'),
+                        backgroundColor: Colors.green,
+                      ),
+                    );
+                  },
+                  onRejectChanges: () {
+                    Navigator.of(context).pop();
+                    // Handle rejecting changes
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Changes rejected!'),
+                        backgroundColor: Colors.red,
+                      ),
+                    );
+                  },
+                )
+              : SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        '${message.itinerary!.startDate} - ${message.itinerary!.endDate}',
+                        style: TextStyle(
+                          color: Colors.grey[600],
+                          fontSize: 14,
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      ...message.itinerary!.days.map((day) {
+                        final dayIndex = message.itinerary!.days.indexOf(day);
+                        return Container(
+                          margin: const EdgeInsets.only(bottom: 16),
+                          padding: const EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            color: Colors.grey[50],
+                            borderRadius: BorderRadius.circular(8),
+                            border: Border.all(color: Colors.grey[300]!),
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Day ${dayIndex + 1} - ${day.date}',
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              Text(
+                                day.summary,
+                                style: TextStyle(
+                                  color: Colors.grey[700],
+                                  fontSize: 14,
+                                ),
+                              ),
+                              const SizedBox(height: 12),
+                              ...day.items.map((item) {
+                                return Padding(
+                                  padding: const EdgeInsets.only(bottom: 8),
+                                  child: Row(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Container(
+                                        width: 60,
+                                        child: Text(
+                                          item.time,
+                                          style: const TextStyle(
+                                            fontWeight: FontWeight.w500,
+                                            fontSize: 12,
+                                          ),
+                                        ),
+                                      ),
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              item.activity,
+                                              style: const TextStyle(
+                                                fontSize: 14,
+                                              ),
+                                            ),
+                                            const SizedBox(height: 2),
+                                            Row(
+                                              children: [
+                                                Icon(
+                                                  Icons.location_on,
+                                                  size: 12,
+                                                  color: Colors.grey[600],
+                                                ),
+                                                const SizedBox(width: 4),
+                                                Expanded(
+                                                  child: Text(
+                                                    item.location,
+                                                    style: TextStyle(
+                                                      color: Colors.grey[600],
+                                                      fontSize: 12,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              }).toList(),
+                            ],
+                          ),
+                        );
+                      }).toList(),
+                    ],
+                  ),
+                ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('Close'),
           ),
         ],
       ),

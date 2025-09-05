@@ -17,6 +17,17 @@ class ItineraryGeneratorPage extends ConsumerStatefulWidget {
 
 class _ItineraryGeneratorPageState extends ConsumerState<ItineraryGeneratorPage> {
   final TextEditingController _promptController = TextEditingController();
+  bool _isTextEmpty = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _promptController.addListener(() {
+      setState(() {
+        _isTextEmpty = _promptController.text.trim().isEmpty;
+      });
+    });
+  }
 
   @override
   void dispose() {
@@ -40,43 +51,32 @@ class _ItineraryGeneratorPageState extends ConsumerState<ItineraryGeneratorPage>
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            if (!isConfigured) ...[
-              Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: theme.colorScheme.errorContainer,
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'OpenAI API Key Required',
-                      style: theme.textTheme.titleMedium?.copyWith(
-                        color: theme.colorScheme.onErrorContainer,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      'To use the AI itinerary generator, you need to configure your OpenAI API key.',
-                      style: theme.textTheme.bodyMedium?.copyWith(
-                        color: theme.colorScheme.onErrorContainer,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      'Run the app with: flutter run --dart-define=OPENAI_API_KEY=your_key_here',
-                      style: theme.textTheme.bodySmall?.copyWith(
-                        color: theme.colorScheme.onErrorContainer,
-                        fontFamily: 'monospace',
-                      ),
-                    ),
-                  ],
-                ),
+            // Demo mode banner
+            Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: theme.colorScheme.primaryContainer,
+                borderRadius: BorderRadius.circular(8),
               ),
-              const SizedBox(height: 16),
-            ],
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.info_outline,
+                    color: theme.colorScheme.onPrimaryContainer,
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      'Demo Mode: Using sample data for itinerary generation',
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        color: theme.colorScheme.onPrimaryContainer,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 16),
             
             Text(
               'Describe your ideal trip:',
@@ -96,7 +96,7 @@ class _ItineraryGeneratorPageState extends ConsumerState<ItineraryGeneratorPage>
             const SizedBox(height: 16),
             
             ElevatedButton(
-              onPressed: isConfigured && !generationState.isLoading && _promptController.text.trim().isNotEmpty
+              onPressed: !generationState.isLoading && !_isTextEmpty
                   ? () => _generateItinerary()
                   : null,
               child: generationState.isLoading
