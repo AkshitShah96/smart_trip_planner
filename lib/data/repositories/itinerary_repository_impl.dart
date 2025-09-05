@@ -1,4 +1,3 @@
-import 'package:isar/isar.dart';
 import '../../domain/entities/itinerary.dart';
 import '../../domain/entities/day_plan.dart';
 import '../../domain/entities/day_item.dart';
