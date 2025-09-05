@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Smart Trip Planner 🧳✈️
 
 A modern Flutter application for planning and managing your trips with AI-powered assistance.
@@ -105,3 +106,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ---
 
 Made with ❤️ using Flutter
+=======
+# smart_trip_planner
+A modern Flutter app for planning trips with AI assistance
+>>>>>>> cb20237df04054d8a0f8de90c6c8e5f7496d0e35
