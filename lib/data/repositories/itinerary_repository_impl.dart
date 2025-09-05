@@ -1,6 +1,4 @@
 import '../../domain/entities/itinerary.dart';
-import '../../domain/entities/day_plan.dart';
-import '../../domain/entities/day_item.dart';
 import '../../domain/repositories/itinerary_repository.dart';
 
 class ItineraryRepositoryImpl implements ItineraryRepository {

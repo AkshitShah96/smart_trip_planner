@@ -171,7 +171,7 @@ class _AddTripPageState extends ConsumerState<AddTripPage> {
         destination: _destinationController.text,
         startDate: _startDate!,
         endDate: _endDate!,
-        activities: const [],  TODO: Add activity selection
+        activities: const [],
         budget: double.parse(_budgetController.text),
       );
 

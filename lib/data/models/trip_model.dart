@@ -64,3 +64,4 @@ class TripModel extends Trip {
 
 
 
+

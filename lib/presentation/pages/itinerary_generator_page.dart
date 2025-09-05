@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/itinerary_providers.dart';
 import '../providers/saved_itineraries_providers.dart';
-import '../../core/errors/itinerary_errors.dart';
 import '../../data/services/itinerary_service_example.dart';
 import '../../domain/entities/itinerary.dart' as domain;
 import '../../domain/entities/day_plan.dart' as domain;

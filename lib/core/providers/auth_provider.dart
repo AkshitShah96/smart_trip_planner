@@ -1,5 +1,4 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter/foundation.dart';
 import '../models/web_user_model.dart';
 import '../repositories/web_only_user_repository.dart';
 

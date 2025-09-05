@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/providers/auth_provider.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/repositories/web_only_user_repository.dart';
-import 'package:smart_trip_planner/presentation/widgets/main_navigation_page.dart';
 import 'login_page.dart';
 
 class RegisterPage extends ConsumerStatefulWidget {

@@ -8,3 +8,4 @@ git commit -m "Remove iOS, Linux, and macOS platform folders"
 git push origin main
 echo Done! Platform folders removed from GitHub.
 pause
+

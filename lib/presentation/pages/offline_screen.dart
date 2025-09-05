@@ -15,7 +15,6 @@ class OfflineScreen extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
- Illustration
                 Container(
                   width: 200,
                   height: 200,
@@ -32,7 +31,6 @@ class OfflineScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 40),
                 
- Title
                 const Text(
                   'You\'re Offline',
                   style: TextStyle(
@@ -43,7 +41,6 @@ class OfflineScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 16),
                 
- Message
                 const Text(
                   'No internet connection detected.\nYour saved trips are still available.',
                   style: TextStyle(
@@ -54,8 +51,6 @@ class OfflineScreen extends StatelessWidget {
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 40),
-                
- Features available offline
                 Container(
                   padding: const EdgeInsets.all(20),
                   decoration: BoxDecoration(
@@ -82,7 +77,6 @@ class OfflineScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 32),
                 
- Retry button
                 Container(
                   width: double.infinity,
                   height: 48,
@@ -95,7 +89,6 @@ class OfflineScreen extends StatelessWidget {
                     color: Colors.transparent,
                     child: InkWell(
                       onTap: () {
- TODO: Implement retry logic
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
                             content: const Text('Checking connection...'),
@@ -123,7 +116,6 @@ class OfflineScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 16),
                 
- Help text
                 const Text(
                   'Check your internet connection and try again',
                   style: TextStyle(
