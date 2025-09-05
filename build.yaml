@@ -1,0 +1,16 @@
+targets:
+  $default:
+    builders:
+      isar_generator:
+        options:
+          # Configure Isar generator options if needed
+
+
+
+
+
+
+
+
+
+
