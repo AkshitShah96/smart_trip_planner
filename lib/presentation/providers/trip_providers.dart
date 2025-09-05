@@ -77,3 +77,6 @@ class TripListNotifier extends StateNotifier<AsyncValue<List<Trip>>> {
 
 
 
+
+
+

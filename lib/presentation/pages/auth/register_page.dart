@@ -35,7 +35,6 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
   Widget build(BuildContext context) {
     final authState = ref.watch(authProvider);
     
-    // Listen to auth state changes
     ref.listen<AuthState>(authProvider, (previous, next) {
       if (next.error != null) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -46,7 +45,6 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
         );
       }
       
-      // Navigate to login page after successful registration (when user is set but not authenticated)
       if (next.user != null && !next.isAuthenticated && previous?.user == null) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
@@ -55,7 +53,6 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
           ),
         );
         
-        // Navigate to login page after a short delay
         Future.delayed(const Duration(milliseconds: 1500), () {
           if (mounted) {
             Navigator.of(context).pushReplacement(
@@ -87,7 +84,6 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  // Logo and Title
                   Container(
                     padding: const EdgeInsets.all(20),
                     decoration: BoxDecoration(
@@ -123,7 +119,6 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
                   ),
                   const SizedBox(height: 48),
 
-                  // Register Form
                   Container(
                     padding: const EdgeInsets.all(24),
                     decoration: BoxDecoration(
@@ -142,7 +137,6 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
-                          // Name Field
                           TextFormField(
                             controller: _nameController,
                             decoration: InputDecoration(
@@ -171,7 +165,6 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
                           ),
                           const SizedBox(height: 16),
 
-                          // Email Field
                           TextFormField(
                             controller: _emailController,
                             keyboardType: TextInputType.emailAddress,
@@ -201,7 +194,6 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
                           ),
                           const SizedBox(height: 16),
 
-                          // Password Field
                           TextFormField(
                             controller: _passwordController,
                             obscureText: _obscurePassword,
@@ -243,7 +235,6 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
                           ),
                           const SizedBox(height: 16),
 
-                          // Confirm Password Field
                           TextFormField(
                             controller: _confirmPasswordController,
                             obscureText: _obscureConfirmPassword,
@@ -285,7 +276,6 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
                           ),
                           const SizedBox(height: 24),
 
-                          // Register Button
                           ElevatedButton(
                             onPressed: authState.isLoading
                                 ? null
@@ -328,7 +318,6 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
                           ),
                           const SizedBox(height: 16),
 
-                          // Debug: Clear Storage Button (temporary)
                           TextButton(
                             onPressed: () async {
                               final repo = ref.read(webOnlyUserRepositoryProvider);
@@ -349,7 +338,6 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
                             ),
                           ),
 
-                          // Login Link
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [

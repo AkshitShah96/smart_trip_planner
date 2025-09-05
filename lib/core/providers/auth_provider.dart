@@ -3,7 +3,6 @@ import 'package:flutter/foundation.dart';
 import '../models/web_user_model.dart';
 import '../repositories/web_only_user_repository.dart';
 
-// Authentication state
 class AuthState {
   final WebUserModel? user;
   final bool isLoading;
@@ -32,12 +31,10 @@ class AuthState {
   }
 }
 
-// Authentication notifier
 class AuthNotifier extends StateNotifier<AuthState> {
   final WebOnlyUserRepository _userRepository;
   AuthNotifier(this._userRepository) : super(const AuthState());
 
-  // Login
   Future<void> login(String email, String password) async {
     state = state.copyWith(isLoading: true, error: null);
     
@@ -58,7 +55,6 @@ class AuthNotifier extends StateNotifier<AuthState> {
     }
   }
 
-  // Register
   Future<void> register(String name, String email, String password) async {
     state = state.copyWith(isLoading: true, error: null);
     
@@ -68,7 +64,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
       state = state.copyWith(
         user: user,
         isLoading: false,
-        isAuthenticated: false, // Don't auto-authenticate after registration
+        isAuthenticated: false,
         error: null,
       );
     } catch (e) {
@@ -79,18 +75,15 @@ class AuthNotifier extends StateNotifier<AuthState> {
     }
   }
 
-  // Logout
   void logout() {
     state = const AuthState();
   }
 
-  // Clear error
   void clearError() {
     state = state.copyWith(error: null);
   }
 }
 
-// Providers
 final authProvider = StateNotifierProvider<AuthNotifier, AuthState>((ref) {
   final webRepo = ref.read(webOnlyUserRepositoryProvider);
   return AuthNotifier(webRepo);

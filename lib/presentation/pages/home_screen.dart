@@ -514,7 +514,7 @@ class HomeScreen extends ConsumerWidget {
               gradient: const LinearGradient(
                 colors: [Color(0xFF667eea), Color(0xFF764ba2)],
               ),
-              shape: BoxShape.circle,
+                shape: BoxShape.circle,
               ),
               child: const Icon(
                 Icons.flight_takeoff_rounded,
@@ -679,12 +679,9 @@ class HomeScreen extends ConsumerWidget {
   }
 
   String _getLocationFromItinerary(Itinerary itinerary) {
-    // Try to extract location from the first day's items
     if (itinerary.days.isNotEmpty && itinerary.days.first.items.isNotEmpty) {
       final firstLocation = itinerary.days.first.items.first.location;
-      // If it's coordinates, try to extract a city name from the title
       if (firstLocation.contains(',')) {
-        // Extract city from title (simple heuristic)
         final title = itinerary.title.toLowerCase();
         if (title.contains('tokyo')) return 'Tokyo, Japan';
         if (title.contains('kyoto')) return 'Kyoto, Japan';

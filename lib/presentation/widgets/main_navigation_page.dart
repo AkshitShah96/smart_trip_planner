@@ -35,7 +35,6 @@ class _MainNavigationPageState extends ConsumerState<MainNavigationPage> {
         foregroundColor: AppTheme.textPrimary,
         elevation: 0,
         actions: [
-          // User Profile Menu
           PopupMenuButton<String>(
             icon: CircleAvatar(
               backgroundColor: AppTheme.primaryBlue,

@@ -56,7 +56,6 @@ class _SplashPageState extends ConsumerState<SplashPage>
     await _logoController.forward();
     await _textController.forward();
     
-    // Wait a bit then navigate
     await Future.delayed(const Duration(milliseconds: 500));
     
     if (mounted) {
@@ -90,7 +89,6 @@ class _SplashPageState extends ConsumerState<SplashPage>
 
   @override
   Widget build(BuildContext context) {
-    // Listen to auth state changes
     ref.listen<AuthState>(authProvider, (previous, next) {
       if (next.isAuthenticated && mounted) {
         Navigator.of(context).pushReplacement(
@@ -117,7 +115,6 @@ class _SplashPageState extends ConsumerState<SplashPage>
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              // Animated Logo
               AnimatedBuilder(
                 animation: _logoAnimation,
                 builder: (context, child) {
@@ -152,7 +149,6 @@ class _SplashPageState extends ConsumerState<SplashPage>
               
               const SizedBox(height: 40),
               
-              // Animated Text
               AnimatedBuilder(
                 animation: _textAnimation,
                 builder: (context, child) {

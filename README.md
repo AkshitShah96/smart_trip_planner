@@ -1,14 +1,13 @@
-<<<<<<< HEAD
 # Smart Trip Planner 🧳✈️
 
-A modern Flutter application for planning and managing your trips with AI-powered assistance.
+A modern Flutter application for planning and managing your trips.
 
 ## Features ✨
 
 - **🔐 User Authentication**: Secure login and registration system
 - **🏠 Modern UI**: Beautiful, responsive design based on Figma mockups
 - **💾 Web-Compatible Database**: Uses localStorage for web platform
-- **🤖 AI Assistant**: Chat with AI for trip planning help
+- **💬 Chat Assistant**: Interactive chat for trip planning help
 - **📋 Trip Management**: Create and manage your travel itineraries
 - **🎨 Custom Theme**: Consistent design system with modern colors
 

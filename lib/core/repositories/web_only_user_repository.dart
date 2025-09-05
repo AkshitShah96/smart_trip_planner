@@ -81,7 +81,6 @@ class WebOnlyUserRepository {
       throw Exception('Invalid email or password');
     }
 
-    // Update last login time
     final updatedUser = user.copyWith(lastLoginAt: DateTime.now());
     final users = _getAllUsers();
     final index = users.indexWhere((u) => u['id'] == updatedUser.id);
@@ -95,10 +94,6 @@ class WebOnlyUserRepository {
 
   Map<String, dynamic>? _findUserByEmail(String email) {
     final users = _getAllUsers();
-    print('Searching for email: $email in ${users.length} users');
-    for (final user in users) {
-      print('Found user email: ${user['email']}');
-    }
     try {
       return users.firstWhere((user) => user['email'] == email);
     } catch (e) {
@@ -106,18 +101,15 @@ class WebOnlyUserRepository {
     }
   }
 
-  // Method to clear all users (for testing)
   Future<void> clearAllUsers() async {
     try {
       html.window.localStorage.remove(_usersKey);
       _nextId = 1;
-      print('Cleared all users from localStorage');
     } catch (e) {
-      print('Error clearing users: $e');
+      // Error handling
     }
   }
 
-  // Method to get all users (for debugging)
   List<WebUserModel> getAllUsers() {
     final usersData = _getAllUsers();
     return usersData.map((data) => WebUserModel.fromJson(data)).toList();
