@@ -1,0 +1,64 @@
+class DayItem {
+  int? id;
+
+  late String time;
+
+  late String activity;
+
+  late String location;
+
+  Map<String, dynamic>? additionalInfo;
+
+
+  DayItem({
+    required this.time,
+    required this.activity,
+    required this.location,
+    this.additionalInfo,
+  });
+
+  DayItem.empty();
+
+  factory DayItem.fromJson(Map<String, dynamic> json) {
+    return DayItem(
+      time: json['time'] as String,
+      activity: json['activity'] as String,
+      location: json['location'] as String,
+      additionalInfo: json['additionalInfo'] as Map<String, dynamic>?,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'time': time,
+      'activity': activity,
+      'location': location,
+      'additionalInfo': additionalInfo,
+    };
+  }
+
+  @override
+  String toString() {
+    return 'DayItem(id: $id, time: $time, activity: $activity, location: $location)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    return other is DayItem &&
+        other.id == id &&
+        other.time == time &&
+        other.activity == activity &&
+        other.location == location;
+  }
+
+  @override
+  int get hashCode {
+    return id.hashCode ^
+        time.hashCode ^
+        activity.hashCode ^
+        location.hashCode;
+  }
+}
+
