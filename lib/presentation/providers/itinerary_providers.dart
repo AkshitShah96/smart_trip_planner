@@ -49,6 +49,7 @@ class ItineraryGenerationNotifier extends StateNotifier<ItineraryGenerationState
   ItineraryGenerationNotifier(this._openaiService) : super(const ItineraryGenerationState());
 
   Future<void> generateItinerary(String prompt) async {
+    print('Starting itinerary generation with prompt: $prompt');
     state = state.copyWith(
       isLoading: true,
       error: null,
@@ -58,15 +59,18 @@ class ItineraryGenerationNotifier extends StateNotifier<ItineraryGenerationState
       Itinerary itinerary;
       
       if (_openaiService != null) {
+        print('Using OpenAI service');
         // Use real OpenAI service if available
         itinerary = await _openaiService!.generateItinerary(prompt);
       } else {
+        print('Using mock service for demo mode');
         // Use mock service for demo mode
         final mockService = AgentServiceFactory.createMockService();
         itinerary = await mockService.generateItinerary(
           userInput: prompt,
           chatHistory: const [],
         );
+        print('Mock service generated itinerary: ${itinerary.title}');
       }
       
       state = state.copyWith(
@@ -74,12 +78,15 @@ class ItineraryGenerationNotifier extends StateNotifier<ItineraryGenerationState
         isLoading: false,
         error: null,
       );
+      print('Itinerary generation completed successfully');
     } on ItineraryError catch (e) {
+      print('ItineraryError: ${e.toString()}');
       state = state.copyWith(
         error: e,
         isLoading: false,
       );
     } catch (e) {
+      print('Unexpected error: ${e.toString()}');
       state = state.copyWith(
         error: UnknownError('Unexpected error: ${e.toString()}'),
         isLoading: false,

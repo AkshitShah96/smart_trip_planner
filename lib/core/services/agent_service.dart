@@ -747,9 +747,7 @@ class MockAgentService extends AgentService {
       
       // Add sample items for each day
       final sampleActivities = _getSampleActivities(location, i);
-      for (final activity in sampleActivities) {
-        dayPlan.items.add(activity);
-      }
+      dayPlan.items.addAll(sampleActivities);
       
       itinerary.days.add(dayPlan);
     }
