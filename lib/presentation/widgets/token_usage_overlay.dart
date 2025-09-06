@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../pages/token_usage_page.dart';
 
 class TokenUsageOverlay extends StatelessWidget {
   final int requestTokens;
@@ -78,6 +79,8 @@ class TokenUsageOverlay extends StatelessWidget {
               _buildTokenRow('Total', totalTokens, theme, Colors.orange),
               const SizedBox(height: 4),
               _buildCostEstimate(theme),
+              const SizedBox(height: 8),
+              _buildViewDetailsButton(context, theme),
             ],
           ),
         ),
@@ -148,6 +151,37 @@ class TokenUsageOverlay extends StatelessWidget {
     } else {
       return number.toString();
     }
+  }
+
+  Widget _buildViewDetailsButton(BuildContext context, ThemeData theme) {
+    return SizedBox(
+      width: double.infinity,
+      child: OutlinedButton(
+        onPressed: () {
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => const TokenUsagePage(),
+            ),
+          );
+        },
+        style: OutlinedButton.styleFrom(
+          padding: const EdgeInsets.symmetric(vertical: 4),
+          side: BorderSide(
+            color: theme.colorScheme.primary.withValues(alpha: 0.5),
+          ),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(6),
+          ),
+        ),
+        child: Text(
+          'View Details',
+          style: theme.textTheme.labelSmall?.copyWith(
+            color: theme.colorScheme.primary,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      ),
+    );
   }
 }
 

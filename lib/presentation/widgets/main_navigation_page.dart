@@ -5,6 +5,7 @@ import '../../core/theme/app_theme.dart';
 import '../pages/home_screen.dart';
 import '../pages/chat_page.dart';
 import '../pages/itinerary_generator_page.dart';
+import '../pages/token_usage_page.dart';
 import '../pages/auth/login_page.dart';
 
 class MainNavigationPage extends ConsumerStatefulWidget {
@@ -21,6 +22,7 @@ class _MainNavigationPageState extends ConsumerState<MainNavigationPage> {
     const HomeScreen(),
     const ChatPage(),
     const ItineraryGeneratorPage(),
+    const TokenUsagePage(),
   ];
 
   @override
@@ -124,6 +126,11 @@ class _MainNavigationPageState extends ConsumerState<MainNavigationPage> {
               icon: Icon(Icons.auto_awesome_outlined),
               activeIcon: Icon(Icons.auto_awesome_rounded),
               label: 'AI Generator',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.analytics_outlined),
+              activeIcon: Icon(Icons.analytics_rounded),
+              label: 'Analytics',
             ),
           ],
         ),

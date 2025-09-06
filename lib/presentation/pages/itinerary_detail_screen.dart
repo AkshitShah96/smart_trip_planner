@@ -4,6 +4,7 @@ import '../../domain/entities/day_plan.dart';
 import '../../domain/entities/day_item.dart';
 import '../../core/services/map_service.dart';
 import '../../core/theme/app_theme.dart';
+import '../widgets/location_map_widget.dart';
 
 class ItineraryDetailScreen extends StatefulWidget {
   final Itinerary itinerary;
@@ -363,27 +364,8 @@ class _ItineraryDetailScreenState extends State<ItineraryDetailScreen> {
                         color: AppTheme.textPrimary,
                       ),
                     ),
-                    const SizedBox(height: 6),
-                    Row(
-                      children: [
-                        const Icon(
-                          Icons.location_on_rounded,
-                          size: 16,
-                          color: AppTheme.textSecondary,
-                        ),
-                        const SizedBox(width: 6),
-                        Expanded(
-                          child: Text(
-                            item.location,
-                            style: const TextStyle(
-                              fontSize: 14,
-                              color: AppTheme.textSecondary,
-                            ),
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-                      ],
-                    ),
+                    const SizedBox(height: 8),
+                    _buildLocationWidget(item),
                   ],
                 ),
               ),
@@ -409,6 +391,79 @@ class _ItineraryDetailScreenState extends State<ItineraryDetailScreen> {
         ],
       ),
     );
+  }
+
+  Widget _buildLocationWidget(DayItem item) {
+    // Check if location is in coordinate format
+    if (_isCoordinateFormat(item.location)) {
+      final coords = _parseCoordinates(item.location);
+      if (coords != null) {
+        return CompactLocationWidget(
+          latitude: coords.latitude,
+          longitude: coords.longitude,
+          title: item.activity,
+          address: item.location,
+          onTap: () => _openLocationInMap(context, item.location, item.activity),
+        );
+      }
+    }
+    
+    // Fallback to simple text display for non-coordinate locations
+    return InkWell(
+      onTap: () => _openLocationInMap(context, item.location, item.activity),
+      borderRadius: BorderRadius.circular(8),
+      child: Container(
+        padding: const EdgeInsets.all(8),
+        decoration: BoxDecoration(
+          border: Border.all(color: AppTheme.mediumGray.withValues(alpha: 0.3)),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Row(
+          children: [
+            const Icon(
+              Icons.location_on_rounded,
+              size: 16,
+              color: AppTheme.textSecondary,
+            ),
+            const SizedBox(width: 6),
+            Expanded(
+              child: Text(
+                item.location,
+                style: const TextStyle(
+                  fontSize: 14,
+                  color: AppTheme.textSecondary,
+                ),
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+            const Icon(
+              Icons.open_in_new,
+              size: 14,
+              color: AppTheme.textSecondary,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  bool _isCoordinateFormat(String location) {
+    final RegExp coordPattern = RegExp(r'^-?\d+\.?\d*,\s*-?\d+\.?\d*$');
+    return coordPattern.hasMatch(location.trim());
+  }
+
+  Coordinates? _parseCoordinates(String location) {
+    try {
+      final parts = location.split(',');
+      if (parts.length == 2) {
+        final lat = double.parse(parts[0].trim());
+        final lng = double.parse(parts[1].trim());
+        return Coordinates(lat, lng);
+      }
+    } catch (e) {
+      print('Error parsing coordinates: $e');
+    }
+    return null;
   }
 
   Future<void> _openLocationInMap(BuildContext context, String location, String activityName) async {
