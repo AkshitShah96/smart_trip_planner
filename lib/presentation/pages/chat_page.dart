@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../providers/token_usage_providers.dart';
+import '../../core/providers/token_usage_providers.dart';
 import '../widgets/chat_input_field.dart';
 import '../widgets/token_usage_overlay.dart';
 import '../widgets/chat_message_widget.dart';

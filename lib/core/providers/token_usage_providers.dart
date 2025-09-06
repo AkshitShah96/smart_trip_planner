@@ -1,5 +1,41 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../widgets/token_usage_overlay.dart';
+
+class TokenUsageData {
+  final int requestTokens;
+  final int responseTokens;
+  final int totalTokens;
+
+  const TokenUsageData({
+    required this.requestTokens,
+    required this.responseTokens,
+    required this.totalTokens,
+  });
+
+  TokenUsageData copyWith({
+    int? requestTokens,
+    int? responseTokens,
+    int? totalTokens,
+  }) {
+    return TokenUsageData(
+      requestTokens: requestTokens ?? this.requestTokens,
+      responseTokens: responseTokens ?? this.responseTokens,
+      totalTokens: totalTokens ?? this.totalTokens,
+    );
+  }
+
+  TokenUsageData operator +(TokenUsageData other) {
+    return TokenUsageData(
+      requestTokens: requestTokens + other.requestTokens,
+      responseTokens: responseTokens + other.responseTokens,
+      totalTokens: totalTokens + other.totalTokens,
+    );
+  }
+
+  @override
+  String toString() {
+    return 'TokenUsageData(request: $requestTokens, response: $responseTokens, total: $totalTokens)';
+  }
+}
 
 class TokenUsageState {
   final TokenUsageData currentSession;

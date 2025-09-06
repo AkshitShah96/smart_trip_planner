@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../domain/entities/chat_message.dart';
 import '../../domain/entities/chat_state.dart';
-import 'token_usage_providers.dart';
+import '../../core/providers/token_usage_providers.dart';
 
 class ChatNotifier extends StateNotifier<ChatState> {
   final Ref ref;

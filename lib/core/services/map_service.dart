@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
@@ -300,15 +301,15 @@ class EnhancedMapService {
     final double dLat = _degreesToRadians(lat2 - lat1);
     final double dLon = _degreesToRadians(lon2 - lon1);
     
-    final double a = (dLat / 2).sin() * (dLat / 2).sin() +
-        lat1.cos() * lat2.cos() * (dLon / 2).sin() * (dLon / 2).sin();
-    final double c = 2 * (a.sqrt()).asin();
+    final double a = sin(dLat / 2) * sin(dLat / 2) +
+        cos(lat1) * cos(lat2) * sin(dLon / 2) * sin(dLon / 2);
+    final double c = 2 * asin(sqrt(a));
     
     return earthRadius * c;
   }
 
   static double _degreesToRadians(double degrees) {
-    return degrees * (3.14159265359 / 180);
+    return degrees * (pi / 180);
   }
 }
 
