@@ -4,11 +4,10 @@ import '../../core/providers/token_usage_providers.dart';
 import '../widgets/chat_input_field.dart';
 import '../widgets/token_usage_overlay.dart';
 import '../widgets/chat_message_widget.dart';
+import '../widgets/planet_ai_avatar.dart';
 import '../../core/theme/app_theme.dart';
-import '../../core/providers/chat_provider.dart';
-import '../../core/models/chat_streaming_models.dart';
-import '../../core/models/itinerary_change.dart';
-import '../../presentation/widgets/itinerary_diff_widget.dart';
+import '../providers/chat_providers.dart';
+import '../../domain/entities/chat_message.dart';
 
 class ChatPage extends ConsumerStatefulWidget {
   const ChatPage({super.key});
@@ -42,20 +41,12 @@ class _ChatPageState extends ConsumerState<ChatPage> {
     return AppBar(
       title: Row(
         children: [
-          Container(
-            padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              gradient: AppTheme.primaryGradient,
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: const Icon(
-              Icons.auto_awesome_rounded,
-              color: AppTheme.white,
-              size: 20,
-            ),
+          const PlanetAiAvatar(
+            size: 32,
+            showAnimation: false,
           ),
           const SizedBox(width: 12),
-          const Text('Trip Assistant'),
+          const Text('Planet AI'),
         ],
       ),
       backgroundColor: AppTheme.white,
@@ -92,7 +83,7 @@ class _ChatPageState extends ConsumerState<ChatPage> {
     final chatState = ref.watch(chatProvider);
     final tokenUsageState = ref.watch(tokenUsageProvider);
     final messages = chatState.messages;
-    final isStreaming = chatState.isStreaming;
+    final isStreaming = chatState.isLoading;
 
     ref.listen(chatProvider, (previous, next) {
       if (previous?.messages.length != next.messages.length) {
@@ -152,22 +143,13 @@ class _ChatPageState extends ConsumerState<ChatPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Container(
-              padding: const EdgeInsets.all(32),
-              decoration: BoxDecoration(
-                gradient: AppTheme.primaryGradient,
-                shape: BoxShape.circle,
-                boxShadow: AppTheme.elevatedShadow,
-              ),
-              child: const Icon(
-                Icons.chat_bubble_outline_rounded,
-                size: 64,
-                color: AppTheme.white,
-              ),
+            const PlanetAiAvatar(
+              size: 120,
+              showAnimation: true,
             ),
             const SizedBox(height: 32),
             const Text(
-              'Welcome to Trip Assistant!',
+              'Welcome to Planet AI!',
               style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
@@ -258,153 +240,13 @@ class _ChatPageState extends ConsumerState<ChatPage> {
     );
   }
 
-  void _showItineraryDetails(BuildContext context, StreamingChatMessage message) {
-    if (message.itinerary == null) return;
-
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(message.itinerary!.title),
-        content: SizedBox(
-          width: double.maxFinite,
-          height: 500,
-          child: message.hasChanges && message.diff != null
-              ? ItineraryDiffWidget(
-                  diffResult: ItineraryDiffResult(
-                    itinerary: message.itinerary!,
-                    diff: message.diff,
-                    hasChanges: message.hasChanges,
-                  ),
-                  showChangeDetails: true,
-                  onAcceptChanges: () {
-                    Navigator.of(context).pop();
-                    // Handle accepting changes
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Changes accepted!'),
-                        backgroundColor: Colors.green,
-                      ),
-                    );
-                  },
-                  onRejectChanges: () {
-                    Navigator.of(context).pop();
-                    // Handle rejecting changes
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Changes rejected!'),
-                        backgroundColor: Colors.red,
-                      ),
-                    );
-                  },
-                )
-              : SingleChildScrollView(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        '${message.itinerary!.startDate} - ${message.itinerary!.endDate}',
-                        style: TextStyle(
-                          color: Colors.grey[600],
-                          fontSize: 14,
-                        ),
-                      ),
-                      const SizedBox(height: 16),
-                      ...message.itinerary!.days.map((day) {
-                        final dayIndex = message.itinerary!.days.indexOf(day);
-                        return Container(
-                          margin: const EdgeInsets.only(bottom: 16),
-                          padding: const EdgeInsets.all(12),
-                          decoration: BoxDecoration(
-                            color: Colors.grey[50],
-                            borderRadius: BorderRadius.circular(8),
-                            border: Border.all(color: Colors.grey[300]!),
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Day ${dayIndex + 1} - ${day.date}',
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 16,
-                                ),
-                              ),
-                              const SizedBox(height: 8),
-                              Text(
-                                day.summary,
-                                style: TextStyle(
-                                  color: Colors.grey[700],
-                                  fontSize: 14,
-                                ),
-                              ),
-                              const SizedBox(height: 12),
-                              ...day.items.map((item) {
-                                return Padding(
-                                  padding: const EdgeInsets.only(bottom: 8),
-                                  child: Row(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Container(
-                                        width: 60,
-                                        child: Text(
-                                          item.time,
-                                          style: const TextStyle(
-                                            fontWeight: FontWeight.w500,
-                                            fontSize: 12,
-                                          ),
-                                        ),
-                                      ),
-                                      Expanded(
-                                        child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              item.activity,
-                                              style: const TextStyle(
-                                                fontSize: 14,
-                                              ),
-                                            ),
-                                            const SizedBox(height: 2),
-                                            Row(
-                                              children: [
-                                                Icon(
-                                                  Icons.location_on,
-                                                  size: 12,
-                                                  color: Colors.grey[600],
-                                                ),
-                                                const SizedBox(width: 4),
-                                                Expanded(
-                                                  child: Text(
-                                                    item.location,
-                                                    style: TextStyle(
-                                                      color: Colors.grey[600],
-                                                      fontSize: 12,
-                                                    ),
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                );
-                              }).toList(),
-                            ],
-                          ),
-                        );
-                      }).toList(),
-                    ],
-                  ),
-                ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Close'),
-          ),
-        ],
+  void _showItineraryDetails(BuildContext context, ChatMessage message) {
+    // Note: ChatMessage doesn't have itinerary property
+    // This method would need to be implemented if itinerary support is needed
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Itinerary details not available for this message type'),
+        backgroundColor: Colors.orange,
       ),
     );
   }

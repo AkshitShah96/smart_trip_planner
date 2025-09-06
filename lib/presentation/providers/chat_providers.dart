@@ -10,6 +10,10 @@ class ChatNotifier extends StateNotifier<ChatState> {
   
   ChatNotifier(this.ref) : super(const ChatState());
 
+  void sendMessage(String content) {
+    addUserMessage(content);
+  }
+
   void addUserMessage(String content) {
     final userMessage = ChatMessage(
       id: DateTime.now().millisecondsSinceEpoch.toString(),
@@ -72,12 +76,12 @@ class ChatNotifier extends StateNotifier<ChatState> {
 
   List<String> _getSampleResponses() {
     return [
-      "I'd be happy to help you plan your trip! Based on your preferences, I recommend starting with the historical sites in the morning when they're less crowded. The Fushimi Inari Shrine is particularly beautiful during sunrise.",
-      "For your Kyoto itinerary, I suggest allocating at least 2-3 hours for the Fushimi Inari Shrine. The hike to the top takes about 2-3 hours round trip, but you can also just visit the lower sections if you're short on time.",
-      "Great choice! The Gion district is perfect for experiencing traditional Kyoto. I recommend visiting in the early evening to see the geishas and maikos. Don't forget to try some traditional sweets at the local tea houses.",
-      "For transportation in Kyoto, I highly recommend getting a day pass for the city buses. It's very convenient and cost-effective. The subway system is also good, but buses cover more areas of interest.",
-      "Weather-wise, April is perfect for visiting Kyoto! The cherry blossoms should be in full bloom, and the temperatures are mild. Just bring a light jacket for the evenings as it can get a bit chilly.",
-      "Food recommendations: Try the kaiseki dinner at a traditional ryokan, visit Nishiki Market for street food, and don't miss the matcha desserts. Kyoto is famous for its tofu dishes too!",
+      "Hello! I'm Planet AI, your intelligent travel companion! I'd be happy to help you plan your trip! Based on your preferences, I recommend starting with the historical sites in the morning when they're less crowded. The Fushimi Inari Shrine is particularly beautiful during sunrise.",
+      "Planet AI here! For your Kyoto itinerary, I suggest allocating at least 2-3 hours for the Fushimi Inari Shrine. The hike to the top takes about 2-3 hours round trip, but you can also just visit the lower sections if you're short on time.",
+      "Great choice! I'm Planet AI, and I think the Gion district is perfect for experiencing traditional Kyoto. I recommend visiting in the early evening to see the geishas and maikos. Don't forget to try some traditional sweets at the local tea houses.",
+      "Planet AI recommends: For transportation in Kyoto, I highly recommend getting a day pass for the city buses. It's very convenient and cost-effective. The subway system is also good, but buses cover more areas of interest.",
+      "Weather-wise, April is perfect for visiting Kyoto! The cherry blossoms should be in full bloom, and the temperatures are mild. Just bring a light jacket for the evenings as it can get a bit chilly. - Planet AI",
+      "Food recommendations from Planet AI: Try the kaiseki dinner at a traditional ryokan, visit Nishiki Market for street food, and don't miss the matcha desserts. Kyoto is famous for its tofu dishes too!",
     ];
   }
 

@@ -131,23 +131,55 @@ class _LocationMapWidgetState extends State<LocationMapWidget> {
                 bottomLeft: Radius.circular(12),
                 bottomRight: Radius.circular(12),
               ),
-              child: GoogleMap(
-                onMapCreated: (GoogleMapController controller) {
-                  _mapController = controller;
-                },
-                initialCameraPosition: CameraPosition(
-                  target: LatLng(widget.latitude, widget.longitude),
-                  zoom: widget.zoom.toDouble(),
-                ),
-                markers: _markers,
-                mapType: MapType.normal,
-                myLocationEnabled: widget.showControls,
-                myLocationButtonEnabled: widget.showControls,
-                zoomControlsEnabled: widget.showControls,
-                compassEnabled: widget.showControls,
-                mapToolbarEnabled: widget.showControls,
-                onTap: _onMapTapped,
-              ),
+              child: MapService.isApiKeyConfigured
+                  ? GoogleMap(
+                      onMapCreated: (GoogleMapController controller) {
+                        _mapController = controller;
+                      },
+                      initialCameraPosition: CameraPosition(
+                        target: LatLng(widget.latitude, widget.longitude),
+                        zoom: widget.zoom.toDouble(),
+                      ),
+                      markers: _markers,
+                      mapType: MapType.normal,
+                      myLocationEnabled: widget.showControls,
+                      myLocationButtonEnabled: widget.showControls,
+                      zoomControlsEnabled: widget.showControls,
+                      compassEnabled: widget.showControls,
+                      mapToolbarEnabled: widget.showControls,
+                      onTap: _onMapTapped,
+                    )
+                  : Container(
+                      color: Colors.grey[200],
+                      child: Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.map_outlined,
+                              size: 48,
+                              color: Colors.grey[600],
+                            ),
+                            const SizedBox(height: 8),
+                            Text(
+                              'Google Maps API Key Required',
+                              style: TextStyle(
+                                color: Colors.grey[600],
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              'Configure GOOGLE_MAPS_API_KEY',
+                              style: TextStyle(
+                                color: Colors.grey[500],
+                                fontSize: 12,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
             ),
           ),
         ],

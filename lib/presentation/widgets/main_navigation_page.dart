@@ -6,6 +6,8 @@ import '../pages/home_screen.dart';
 import '../pages/chat_page.dart';
 import '../pages/itinerary_generator_page.dart';
 import '../pages/token_usage_page.dart';
+import '../pages/maps_test_page.dart';
+import '../pages/chat_test_page.dart';
 import '../pages/auth/login_page.dart';
 
 class MainNavigationPage extends ConsumerStatefulWidget {
@@ -23,6 +25,7 @@ class _MainNavigationPageState extends ConsumerState<MainNavigationPage> {
     const ChatPage(),
     const ItineraryGeneratorPage(),
     const TokenUsagePage(),
+    const MapsTestPage(),
   ];
 
   @override
@@ -131,6 +134,11 @@ class _MainNavigationPageState extends ConsumerState<MainNavigationPage> {
               icon: Icon(Icons.analytics_outlined),
               activeIcon: Icon(Icons.analytics_rounded),
               label: 'Analytics',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.map_outlined),
+              activeIcon: Icon(Icons.map_rounded),
+              label: 'Maps Test',
             ),
           ],
         ),

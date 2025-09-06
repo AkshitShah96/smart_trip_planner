@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'core/theme/app_theme.dart';
 import 'presentation/pages/splash_page.dart';
+import 'presentation/pages/chat_page.dart';
 
 void main() {
   runApp(
@@ -21,6 +22,9 @@ class SmartTripPlannerApp extends StatelessWidget {
       theme: AppTheme.lightTheme,
       debugShowCheckedModeBanner: false,
       home: const SplashPage(),
+      routes: {
+        '/chat': (context) => const ChatPage(),
+      },
     );
   }
 }

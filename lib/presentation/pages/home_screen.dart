@@ -4,8 +4,9 @@ import '../providers/saved_itineraries_providers.dart';
 import '../../domain/entities/itinerary.dart';
 import '../../core/theme/app_theme.dart';
 import '../../core/providers/auth_provider.dart';
-import 'itinerary_detail_screen.dart';
+import 'enhanced_itinerary_detail_screen.dart';
 import 'itinerary_generator_page.dart';
+import '../../data/models/demo_itinerary.dart';
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
@@ -386,7 +387,7 @@ class HomeScreen extends ConsumerWidget {
         else if (itinerariesState.error != null)
           _buildErrorState(context, ref, itinerariesState.error!)
         else if (itinerariesState.itineraries.isEmpty)
-          _buildEmptyState(context)
+          _buildDemoItineraries(context, ref)
         else
           _buildItinerariesList(context, ref, itinerariesState.itineraries),
       ],
@@ -492,6 +493,45 @@ class HomeScreen extends ConsumerWidget {
     );
   }
 
+  Widget _buildDemoItineraries(BuildContext context, WidgetRef ref) {
+    final demoItineraries = [
+      DemoItinerary.baliItinerary,
+      DemoItinerary.kyotoItinerary,
+      DemoItinerary.tokyoItinerary,
+      DemoItinerary.parisItinerary,
+    ];
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'Demo Itineraries (with Maps Integration)',
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.w600,
+            color: Color(0xFF64748B),
+          ),
+        ),
+        const SizedBox(height: 12),
+        SizedBox(
+          height: 200,
+          child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            itemCount: demoItineraries.length,
+            itemBuilder: (context, index) {
+              final itinerary = demoItineraries[index];
+              return Container(
+                width: 280,
+                margin: const EdgeInsets.only(right: 16),
+                child: _buildItineraryCard(context, ref, itinerary),
+              );
+            },
+          ),
+        ),
+      ],
+    );
+  }
+
   Widget _buildEmptyState(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(32),
@@ -582,7 +622,7 @@ class HomeScreen extends ConsumerWidget {
           onTap: () {
             Navigator.of(context).push(
               MaterialPageRoute(
-                builder: (context) => ItineraryDetailScreen(itinerary: itinerary),
+                builder: (context) => EnhancedItineraryDetailScreen(itinerary: itinerary),
               ),
             );
           },
@@ -638,16 +678,19 @@ class HomeScreen extends ConsumerWidget {
                             color: const Color(0xFF667eea),
                           ),
                           const SizedBox(width: 4),
-                          Text(
-                            '${itinerary.startDate} - ${itinerary.endDate}',
-                            style: const TextStyle(
-                              fontSize: 12,
-                              color: Color(0xFF667eea),
-                              fontWeight: FontWeight.w500,
+                          Expanded(
+                            child: Text(
+                              '${itinerary.startDate} - ${itinerary.endDate}',
+                              style: const TextStyle(
+                                fontSize: 12,
+                                color: Color(0xFF667eea),
+                                fontWeight: FontWeight.w500,
+                              ),
+                              overflow: TextOverflow.ellipsis,
                             ),
                           ),
                         ],
-                          ),
+                      ),
                         ],
                       ),
                     ),
