@@ -1,8 +1,12 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../services/agent_service.dart';
 import '../providers/agent_service_provider.dart';
+import '../errors/itinerary_errors.dart';
 import '../../domain/entities/chat_message.dart';
 import '../../data/models/itinerary.dart';
+import '../../data/models/day_plan.dart';
+import '../../data/models/day_item.dart';
 
 /// Example usage of AgentService in a Flutter widget
 class AgentServiceUsageExample extends ConsumerWidget {
@@ -225,6 +229,3 @@ class AgentServiceErrorHandler {
     }
   }
 }
-
-
-

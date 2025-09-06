@@ -400,6 +400,3 @@ class WebSearchIntegrationExample {
     }
   }
 }
-
-
-

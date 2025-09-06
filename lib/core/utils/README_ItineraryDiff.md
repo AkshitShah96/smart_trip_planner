@@ -467,3 +467,4 @@ print('Diff details: ${diff.changes.map((c) => c.toString()).join('\n')}');
 - **Custom Highlighting**: User-defined highlighting rules
 
 
+
