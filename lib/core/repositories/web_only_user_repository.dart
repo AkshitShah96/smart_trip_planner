@@ -1,8 +1,10 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:crypto/crypto.dart';
 import 'dart:convert';
-import 'dart:html' as html;
 import '../models/web_user_model.dart';
+import '../utils/local_storage/local_storage_stub.dart'
+    if (dart.library.html) '../utils/local_storage/local_storage_web.dart'
+    if (dart.library.io) '../utils/local_storage/local_storage_io.dart';
 
 class WebOnlyUserRepository {
   static const String _usersKey = 'smart_trip_planner_users';
@@ -28,7 +30,7 @@ class WebOnlyUserRepository {
 
   List<Map<String, dynamic>> _getAllUsers() {
     try {
-      final usersJson = html.window.localStorage[_usersKey];
+      final usersJson = LocalStorage.instance.getItem(_usersKey);
       if (usersJson != null) {
         final List<dynamic> usersList = json.decode(usersJson);
         return usersList.cast<Map<String, dynamic>>();
@@ -42,7 +44,7 @@ class WebOnlyUserRepository {
   Future<void> _saveAllUsers(List<Map<String, dynamic>> users) async {
     try {
       final usersJson = json.encode(users);
-      html.window.localStorage[_usersKey] = usersJson;
+      LocalStorage.instance.setItem(_usersKey, usersJson);
     } catch (e) {
       print('Error saving users to localStorage: $e');
     }
@@ -103,7 +105,7 @@ class WebOnlyUserRepository {
 
   Future<void> clearAllUsers() async {
     try {
-      html.window.localStorage.remove(_usersKey);
+      LocalStorage.instance.removeItem(_usersKey);
       _nextId = 1;
     } catch (e) {
     }

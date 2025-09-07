@@ -3,7 +3,6 @@ import 'package:dio/dio.dart';
 import 'package:crypto/crypto.dart';
 import '../errors/itinerary_errors.dart';
 
-/// Web search result model
 class WebSearchResult {
   final String title;
   final String description;
@@ -56,7 +55,6 @@ class WebSearchResult {
   }
 }
 
-/// Web search service for real-time information
 class WebSearchService {
   static const String _serpApiKey = String.fromEnvironment('SERP_API_KEY');
   static const String _googleSearchApiKey = String.fromEnvironment('GOOGLE_SEARCH_API_KEY');
@@ -74,35 +72,29 @@ class WebSearchService {
     _dio.options.receiveTimeout = const Duration(seconds: 30);
   }
 
-  /// Perform web search for itinerary-related queries
   Future<List<WebSearchResult>> performWebSearch(String query) async {
     try {
       if (_useDummyData || (!_hasApiKeys() && _useDummyData)) {
         return _generateDummyData(query);
       }
 
-      // Try different search providers in order of preference
       if (_serpApiKey.isNotEmpty) {
         return await _searchWithSerpApi(query);
       } else if (_googleSearchApiKey.isNotEmpty && _googleSearchEngineId.isNotEmpty) {
         return await _searchWithGoogleCustomSearch(query);
       } else {
-        // Fallback to dummy data if no API keys available
         return _generateDummyData(query);
       }
     } catch (e) {
-      // Fallback to dummy data on error
       return _generateDummyData(query);
     }
   }
 
-  /// Search for restaurants
   Future<List<WebSearchResult>> searchRestaurants(String location) async {
     final query = 'best restaurants in $location';
     return await performWebSearch(query);
   }
 
-  /// Search for hotels
   Future<List<WebSearchResult>> searchHotels(String location, {String? near}) async {
     final query = near != null 
         ? 'hotels near $near in $location'
@@ -110,19 +102,16 @@ class WebSearchService {
     return await performWebSearch(query);
   }
 
-  /// Search for attractions
   Future<List<WebSearchResult>> searchAttractions(String location) async {
     final query = 'top attractions in $location';
     return await performWebSearch(query);
   }
 
-  /// Search for transportation
   Future<List<WebSearchResult>> searchTransportation(String from, String to) async {
     final query = 'transportation from $from to $to';
     return await performWebSearch(query);
   }
 
-  /// Search for events
   Future<List<WebSearchResult>> searchEvents(String location, {String? date}) async {
     final query = date != null 
         ? 'events in $location on $date'
@@ -130,7 +119,6 @@ class WebSearchService {
     return await performWebSearch(query);
   }
 
-  /// Search using SerpAPI (recommended for production)
   Future<List<WebSearchResult>> _searchWithSerpApi(String query) async {
     final response = await _dio.get(
       'https://serpapi.com/search',
@@ -147,7 +135,6 @@ class WebSearchService {
     return _parseSerpApiResponse(response.data);
   }
 
-  /// Search using Google Custom Search API
   Future<List<WebSearchResult>> _searchWithGoogleCustomSearch(String query) async {
     final response = await _dio.get(
       'https://www.googleapis.com/customsearch/v1',
@@ -162,7 +149,6 @@ class WebSearchService {
     return _parseGoogleCustomSearchResponse(response.data);
   }
 
-  /// Parse SerpAPI response
   List<WebSearchResult> _parseSerpApiResponse(Map<String, dynamic> data) {
     final results = <WebSearchResult>[];
     final organicResults = data['organic_results'] as List?;
@@ -183,7 +169,6 @@ class WebSearchService {
           additionalData: _extractAdditionalData(result),
         ));
       } catch (e) {
-        // Skip invalid results
         continue;
       }
     }
@@ -191,7 +176,6 @@ class WebSearchService {
     return results;
   }
 
-  /// Parse Google Custom Search response
   List<WebSearchResult> _parseGoogleCustomSearchResponse(Map<String, dynamic> data) {
     final results = <WebSearchResult>[];
     final items = data['items'] as List?;
@@ -211,7 +195,6 @@ class WebSearchService {
           },
         ));
       } catch (e) {
-        // Skip invalid results
         continue;
       }
     }
@@ -219,7 +202,6 @@ class WebSearchService {
     return results;
   }
 
-  /// Generate dummy data for testing/fallback
   List<WebSearchResult> _generateDummyData(String query) {
     final queryLower = query.toLowerCase();
     
@@ -408,13 +390,11 @@ class WebSearchService {
     ];
   }
 
-  /// Check if API keys are available
   bool _hasApiKeys() {
     return _serpApiKey.isNotEmpty || 
            (_googleSearchApiKey.isNotEmpty && _googleSearchEngineId.isNotEmpty);
   }
 
-  /// Parse rating from various formats
   double? _parseRating(dynamic rating) {
     if (rating == null) return null;
     if (rating is double) return rating;
@@ -423,11 +403,9 @@ class WebSearchService {
     return null;
   }
 
-  /// Extract additional data from search result
   Map<String, dynamic>? _extractAdditionalData(Map<String, dynamic> result) {
     final additionalData = <String, dynamic>{};
     
-    // Extract common fields
     if (result['cuisine'] != null) additionalData['cuisine'] = result['cuisine'];
     if (result['price'] != null) additionalData['price'] = result['price'];
     if (result['hours'] != null) additionalData['hours'] = result['hours'];
@@ -438,7 +416,6 @@ class WebSearchService {
   }
 }
 
-/// Factory for creating WebSearchService instances
 class WebSearchServiceFactory {
   static WebSearchService createWithApiKeys() {
     return WebSearchService(useDummyData: false);

@@ -4,13 +4,10 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class MapService {
-  // Google Maps API Key - should be set via environment variables
   static const String _googleMapsApiKey = String.fromEnvironment('GOOGLE_MAPS_API_KEY', defaultValue: '');
   
-  /// Get Google Maps API Key
   static String get googleMapsApiKey => _googleMapsApiKey;
   
-  /// Check if Google Maps API Key is configured
   static bool get isApiKeyConfigured => _googleMapsApiKey.isNotEmpty;
 
   static Future<bool> openLocation(String location) async {
@@ -36,7 +33,6 @@ class MapService {
     return await _launchUrl(url);
   }
 
-  /// Open Google Maps with directions to a location
   static Future<bool> openGoogleMapsDirections({
     required double destinationLat,
     required double destinationLng,
@@ -58,7 +54,6 @@ class MapService {
     return await _launchUrl(url);
   }
 
-  /// Open Google Maps with multiple waypoints
   static Future<bool> openGoogleMapsWithWaypoints({
     required List<MapLocation> waypoints,
     String? label,

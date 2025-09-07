@@ -14,8 +14,6 @@ import '../utils/json_validator.dart';
 import '../models/itinerary_change.dart';
 import '../utils/itinerary_diff_engine.dart';
 
-/// Agent Isolate Service - Implements serverless function/isolate for agent logic
-/// This service runs in a separate isolate to handle LLM interactions with function-calling
 class AgentIsolateService {
   static const String _openaiBaseUrl = 'https://api.openai.com/v1';
   static const String _geminiBaseUrl = 'https://generativelanguage.googleapis.com/v1beta';
@@ -44,7 +42,6 @@ class AgentIsolateService {
     _dio.options.receiveTimeout = const Duration(seconds: 60);
   }
 
-  /// Main entry point for the isolate - processes agent requests
   static Future<Map<String, dynamic>> processAgentRequest(
     Map<String, dynamic> request,
   ) async {
@@ -61,7 +58,6 @@ class AgentIsolateService {
     }
   }
 
-  /// Create service instance from request data
   factory AgentIsolateService._fromRequest(Map<String, dynamic> request) {
     return AgentIsolateService(
       openaiApiKey: request['openaiApiKey'] as String?,
@@ -71,26 +67,22 @@ class AgentIsolateService {
     );
   }
 
-  /// Process the agent request
   Future<Map<String, dynamic>> _processRequest(Map<String, dynamic> request) async {
     final userInput = request['userInput'] as String;
     final previousItineraryJson = request['previousItinerary'] as Map<String, dynamic>?;
     final chatHistoryJson = request['chatHistory'] as List<dynamic>?;
     final isRefinement = request['isRefinement'] as bool? ?? false;
 
-    // Parse previous itinerary if provided
     Itinerary? previousItinerary;
     if (previousItineraryJson != null) {
       previousItinerary = Itinerary.fromJson(previousItineraryJson);
     }
 
-    // Parse chat history
     final chatHistory = (chatHistoryJson ?? [])
         .map((json) => ChatMessage.fromJson(json as Map<String, dynamic>))
         .toList();
 
     try {
-      // Generate itinerary with LLM function-calling
       final itinerary = await _generateItineraryWithFunctionCalling(
         userInput: userInput,
         previousItinerary: previousItinerary,
@@ -98,7 +90,6 @@ class AgentIsolateService {
         isRefinement: isRefinement,
       );
 
-      // Validate the response
       final validationResult = _validateItinerary(itinerary);
       if (!validationResult['isValid']) {
         throw InvalidJsonError('Invalid itinerary: ${validationResult['errors']}');

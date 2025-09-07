@@ -5,12 +5,10 @@ import '../../domain/entities/day_item.dart';
 import '../../domain/repositories/itinerary_repository.dart';
 
 class ItineraryRepositoryImpl implements ItineraryRepository {
-  // In-memory storage for web compatibility
   static final List<Itinerary> _temporaryStorage = [];
   
   @override
   Future<void> saveItinerary(Itinerary itinerary) async {
-    // Use in-memory storage for now (works on all platforms)
     _temporaryStorage.add(itinerary);
   }
 

@@ -10,7 +10,6 @@ import '../utils/json_validator.dart';
 import '../models/itinerary_change.dart';
 import '../utils/itinerary_diff_engine.dart';
 
-/// Ollama service for local open-source LLM integration
 class OllamaService {
   static const String _defaultBaseUrl = 'http://localhost:11434';
   
@@ -34,13 +33,11 @@ class OllamaService {
     _dio.options.connectTimeout = const Duration(seconds: 30);
     _dio.options.receiveTimeout = const Duration(seconds: 60);
     
-    // Add CORS headers for web compatibility
     _dio.options.headers['Access-Control-Allow-Origin'] = '*';
     _dio.options.headers['Access-Control-Allow-Methods'] = 'GET, POST, PUT, DELETE, OPTIONS';
     _dio.options.headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization';
   }
 
-  /// Generate or refine itinerary with diff tracking
   Future<ItineraryDiffResult> generateItineraryWithDiff({
     required String userInput,
     Itinerary? previousItinerary,
@@ -48,7 +45,6 @@ class OllamaService {
     bool isRefinement = false,
   }) async {
     try {
-      // Generate new itinerary
       final newItinerary = await generateItinerary(
         userInput: userInput,
         previousItinerary: previousItinerary,
@@ -56,7 +52,6 @@ class OllamaService {
         isRefinement: isRefinement,
       );
 
-      // Create diff if we have a previous itinerary
       ItineraryDiff? diff;
       if (previousItinerary != null) {
         diff = ItineraryDiffEngine.compareItineraries(previousItinerary, newItinerary);
@@ -72,7 +67,6 @@ class OllamaService {
     }
   }
 
-  /// Main method to generate or refine itinerary based on user input
   Future<Itinerary> generateItinerary({
     required String userInput,
     Itinerary? previousItinerary,
@@ -80,16 +74,13 @@ class OllamaService {
     bool isRefinement = false,
   }) async {
     try {
-      // Validate input
       _validateInput(userInput);
       
-      // Perform web search for real-time information
       Map<String, dynamic> webSearchData = {};
       if (_enableWebSearch) {
         webSearchData = await _performWebSearch(userInput, previousItinerary);
       }
       
-      // Prepare the prompt
       final prompt = _buildPrompt(
         userInput: userInput,
         previousItinerary: previousItinerary,
@@ -98,10 +89,8 @@ class OllamaService {
         webSearchData: webSearchData,
       );
 
-      // Call Ollama API
       final response = await _callOllama(prompt);
 
-      // Parse and validate the response
       final validationResult = _parseAndValidateResponse(response, isRefinement);
 
       if (!validationResult.isValid) {
@@ -110,7 +99,6 @@ class OllamaService {
 
       final itinerary = validationResult.itinerary!;
 
-      // Enhance itinerary with web search data
       if (webSearchData.isNotEmpty) {
         return _enhanceItineraryWithWebData(itinerary, webSearchData);
       }
@@ -123,7 +111,6 @@ class OllamaService {
     }
   }
 
-  /// Build the prompt for Ollama
   String _buildPrompt({
     required String userInput,
     Itinerary? previousItinerary,
@@ -167,7 +154,6 @@ class OllamaService {
     return buffer.toString();
   }
 
-  /// Call Ollama API
   Future<Map<String, dynamic>> _callOllama(String prompt) async {
     try {
       final response = await _dio.post(
@@ -193,7 +179,6 @@ class OllamaService {
     }
   }
 
-  /// Extract response from Ollama API
   Map<String, dynamic> _extractOllamaResponse(Map<String, dynamic> data) {
     final response = data['response'] as String?;
     if (response == null || response.isEmpty) {
@@ -201,7 +186,6 @@ class OllamaService {
     }
 
     try {
-      // Extract JSON from the response text
       final jsonMatch = RegExp(r'\{[\s\S]*\}').firstMatch(response);
       if (jsonMatch == null) {
         throw const InvalidJsonError('No JSON found in Ollama response');
@@ -213,16 +197,13 @@ class OllamaService {
     }
   }
 
-  /// Parse and validate the AI response using JsonValidator
   ValidationResult _parseAndValidateResponse(Map<String, dynamic> response, bool isRefinement) {
     try {
-      // Ollama returns content directly
       final content = response['response'] as String;
       if (content == null) {
         throw const InvalidJsonError('No content in Ollama response');
       }
 
-      // Use JsonValidator to validate and parse
       return JsonValidator.validateAndParseItinerary(content);
     } catch (e) {
       return ValidationResult.failure(
@@ -232,7 +213,6 @@ class OllamaService {
     }
   }
 
-  /// Generate generic regeneration request
   String _generateGenericRegenerationRequest() {
     return '''
 The generated JSON is invalid. Please ensure it follows this exact schema:
@@ -260,7 +240,6 @@ Make sure all required fields are present and have the correct data types.
 ''';
   }
 
-  /// Validate user input
   void _validateInput(String userInput) {
     if (userInput.trim().isEmpty) {
       throw const InvalidItineraryError('User input cannot be empty');
@@ -271,7 +250,6 @@ Make sure all required fields are present and have the correct data types.
     }
   }
 
-  /// Handle Dio errors
   ItineraryError _handleDioError(DioException e) {
     switch (e.response?.statusCode) {
       case 404:
@@ -287,7 +265,6 @@ Make sure all required fields are present and have the correct data types.
     }
   }
 
-  /// Get JSON schema for reference
   String _getJsonSchema() {
     return '''
 {

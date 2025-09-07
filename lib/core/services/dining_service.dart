@@ -3,7 +3,6 @@ import 'package:dio/dio.dart';
 import '../errors/itinerary_errors.dart';
 import 'web_search_service.dart';
 
-/// Dining suggestion model with enhanced information
 class DiningSuggestion {
   final String name;
   final String description;
@@ -66,7 +65,6 @@ class DiningSuggestion {
   }
 }
 
-/// Service for enhanced dining suggestions with real-time data
 class DiningService {
   final Dio _dio;
   final WebSearchService _webSearchService;
@@ -80,7 +78,6 @@ class DiningService {
     _dio.options.receiveTimeout = const Duration(seconds: 30);
   }
 
-  /// Get dining suggestions for a specific location
   Future<List<DiningSuggestion>> getDiningSuggestions({
     required String location,
     String? cuisine,
@@ -88,7 +85,6 @@ class DiningService {
     int limit = 10,
   }) async {
     try {
-      // Build search queries for different types of dining information
       final queries = _buildDiningQueries(location, cuisine, priceRange);
       final allSuggestions = <DiningSuggestion>[];
 
@@ -98,7 +94,6 @@ class DiningService {
         allSuggestions.addAll(suggestions);
       }
 
-      // Remove duplicates and sort by rating
       final uniqueSuggestions = _removeDuplicates(allSuggestions);
       final sortedSuggestions = _sortByRating(uniqueSuggestions);
 
@@ -108,7 +103,6 @@ class DiningService {
     }
   }
 
-  /// Get specific restaurant information
   Future<DiningSuggestion?> getRestaurantDetails({
     required String restaurantName,
     required String location,
@@ -127,7 +121,6 @@ class DiningService {
     }
   }
 
-  /// Get dining suggestions for a specific meal time
   Future<List<DiningSuggestion>> getMealSuggestions({
     required String location,
     required String mealTime, // breakfast, lunch, dinner
@@ -150,11 +143,9 @@ class DiningService {
     }
   }
 
-  /// Build search queries for dining information
   List<String> _buildDiningQueries(String location, String? cuisine, String? priceRange) {
     final queries = <String>[];
     
-    // Base dining queries
     queries.add('best restaurants in $location');
     queries.add('top rated restaurants $location');
     
@@ -167,7 +158,6 @@ class DiningService {
       queries.add('$priceRange restaurants in $location');
     }
     
-    // Add specific dining queries
     queries.add('local food $location');
     queries.add('traditional restaurants $location');
     queries.add('fine dining $location');
@@ -176,7 +166,6 @@ class DiningService {
     return queries;
   }
 
-  /// Build search queries for specific meal times
   List<String> _buildMealQueries(String location, String mealTime, String? cuisine) {
     final queries = <String>[];
     
@@ -205,7 +194,6 @@ class DiningService {
     return queries;
   }
 
-  /// Parse web search results into dining suggestions
   List<DiningSuggestion> _parseDiningResults(List<WebSearchResult> results, String location) {
     final suggestions = <DiningSuggestion>[];
     
@@ -216,7 +204,6 @@ class DiningService {
           suggestions.add(suggestion);
         }
       } catch (e) {
-        // Skip invalid results
         continue;
       }
     }
@@ -224,29 +211,21 @@ class DiningService {
     return suggestions;
   }
 
-  /// Parse a single web search result into a dining suggestion
   DiningSuggestion? _parseDiningResult(WebSearchResult result, String location) {
     try {
-      // Extract restaurant name from title
       final name = _extractRestaurantName(result.title);
       if (name == null || name.isEmpty) return null;
 
-      // Extract rating from description or additional data
       final rating = _extractRating(result.description, result.additionalData);
       
-      // Extract price range
       final priceRange = _extractPriceRange(result.description);
       
-      // Extract cuisine type
       final cuisine = _extractCuisine(result.description);
       
-      // Extract phone number
       final phone = _extractPhone(result.description, result.additionalData);
       
-      // Extract hours
       final hours = _extractHours(result.description);
       
-      // Extract specialties
       final specialties = _extractSpecialties(result.description);
 
       return DiningSuggestion(
@@ -267,7 +246,6 @@ class DiningService {
     }
   }
 
-  /// Parse detailed restaurant information
   DiningSuggestion? _parseRestaurantDetails(WebSearchResult result, String restaurantName) {
     try {
       final rating = _extractRating(result.description, result.additionalData);
@@ -295,12 +273,10 @@ class DiningService {
     }
   }
 
-  /// Extract restaurant name from title
   String? _extractRestaurantName(String title) {
-    // Remove common suffixes and prefixes
     final cleanTitle = title
-        .replaceAll(RegExp(r'\s*-\s*.*$'), '') // Remove everything after dash
-        .replaceAll(RegExp(r'\s*\|\s*.*$'), '') // Remove everything after pipe
+        .replaceAll(RegExp(r'\s*-\s*.*$'), '')
+        .replaceAll(RegExp(r'\s*\|\s*.*$'), '')
         .replaceAll(RegExp(r'\s*Restaurant.*$', caseSensitive: false), '')
         .replaceAll(RegExp(r'\s*Cafe.*$', caseSensitive: false), '')
         .replaceAll(RegExp(r'\s*Bar.*$', caseSensitive: false), '')
@@ -309,15 +285,12 @@ class DiningService {
     return cleanTitle.isNotEmpty ? cleanTitle : null;
   }
 
-  /// Extract rating from text
   double? _extractRating(String text, Map<String, dynamic>? additionalData) {
-    // Check additional data first
     if (additionalData != null) {
       final rating = additionalData['rating'];
       if (rating is num) return rating.toDouble();
     }
 
-    // Extract from text
     final ratingPattern = RegExp(r'(\d+\.?\d*)\s*(?:stars?|/5|/10)');
     final match = ratingPattern.firstMatch(text.toLowerCase());
     if (match != null) {
@@ -328,7 +301,6 @@ class DiningService {
     return null;
   }
 
-  /// Extract price range from text
   String? _extractPriceRange(String text) {
     final pricePatterns = [
       RegExp(r'\$\$?\$?\$?', caseSensitive: false),
@@ -346,7 +318,6 @@ class DiningService {
     return null;
   }
 
-  /// Extract cuisine type from text
   String? _extractCuisine(String text) {
     final cuisines = [
       'italian', 'chinese', 'japanese', 'mexican', 'indian', 'thai',
@@ -365,21 +336,17 @@ class DiningService {
     return null;
   }
 
-  /// Extract phone number from text
   String? _extractPhone(String text, Map<String, dynamic>? additionalData) {
-    // Check additional data first
     if (additionalData != null) {
       final phone = additionalData['phone'];
       if (phone is String) return phone;
     }
 
-    // Extract from text
     final phonePattern = RegExp(r'\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}');
     final match = phonePattern.firstMatch(text);
     return match?.group(0);
   }
 
-  /// Extract hours from text
   String? _extractHours(String text) {
     final hoursPattern = RegExp(r'(?:open|hours?)\s*:?\s*([^.]*)', caseSensitive: false);
     final match = hoursPattern.firstMatch(text);
@@ -392,7 +359,6 @@ class DiningService {
     return null;
   }
 
-  /// Extract specialties from text
   List<String>? _extractSpecialties(String text) {
     final specialties = <String>[];
     final specialtyKeywords = [
@@ -403,7 +369,6 @@ class DiningService {
     final textLower = text.toLowerCase();
     for (final keyword in specialtyKeywords) {
       if (textLower.contains(keyword)) {
-        // Extract text after the keyword
         final index = textLower.indexOf(keyword);
         final afterKeyword = text.substring(index + keyword.length).trim();
         final endIndex = afterKeyword.indexOf('.');

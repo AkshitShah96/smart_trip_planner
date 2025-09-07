@@ -181,10 +181,9 @@ class _EnhancedItineraryDetailScreenState extends ConsumerState<EnhancedItinerar
                           const SizedBox(height: 4),
                           Text(
                             '${widget.itinerary.days.length} days planned',
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontSize: 14,
-                              color: AppTheme.white,
-                              opacity: 0.9,
+                              color: AppTheme.white.withOpacity(0.9),
                             ),
                           ),
                         ],

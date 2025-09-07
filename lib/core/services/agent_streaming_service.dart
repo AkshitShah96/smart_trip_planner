@@ -9,7 +9,6 @@ import '../../data/models/day_item.dart';
 import '../../domain/entities/chat_message.dart';
 import 'agent_service.dart';
 
-/// Factory for creating AgentStreamingService instances
 class AgentStreamingServiceFactory {
   static AgentStreamingService create({required AgentService agentService}) {
     return AgentStreamingService(
@@ -20,8 +19,6 @@ class AgentStreamingServiceFactory {
   }
 }
 
-/// Agent Streaming Service - Implements token-by-token streaming for chat UI
-/// This service provides real-time streaming responses like ChatGPT
 class AgentStreamingService {
   final Dio _dio;
   final String? _openaiApiKey;
@@ -42,10 +39,8 @@ class AgentStreamingService {
     _dio.options.receiveTimeout = const Duration(seconds: 60);
   }
 
-  /// Stream getter for external access
   Stream<ChatStreamEvent> get stream => _streamController.stream;
 
-  /// Generate streaming response
   Future<void> generateStreamingResponse({
     required String userInput,
     Itinerary? previousItinerary,
@@ -66,12 +61,10 @@ class AgentStreamingService {
     }
   }
 
-  /// Dispose resources
   void dispose() {
     _streamController.close();
   }
 
-  /// Stream chat response with token-by-token updates
   Stream<ChatStreamEvent> streamChatResponse({
     required String userInput,
     Itinerary? previousItinerary,
@@ -79,13 +72,10 @@ class AgentStreamingService {
     bool isRefinement = false,
   }) async* {
     try {
-      // Validate input
       _validateInput(userInput);
 
-      // Start streaming
       yield ChatStreamEvent.start();
 
-      // Stream the response
       if (_useOpenAI) {
         yield* _streamOpenAIResponse(
           userInput: userInput,
@@ -106,7 +96,6 @@ class AgentStreamingService {
     }
   }
 
-  /// Stream OpenAI response with Server-Sent Events
   Stream<ChatStreamEvent> _streamOpenAIResponse({
     required String userInput,
     Itinerary? previousItinerary,
@@ -136,14 +125,12 @@ class AgentStreamingService {
         },
       );
 
-      // Process streaming response
       yield* _processOpenAIStream(response);
     } catch (e) {
       yield ChatStreamEvent.error('OpenAI streaming error: ${e.toString()}');
     }
   }
 
-  /// Stream Gemini response
   Stream<ChatStreamEvent> _streamGeminiResponse({
     required String userInput,
     Itinerary? previousItinerary,
@@ -156,27 +143,21 @@ class AgentStreamingService {
     }
 
     try {
-      // For now, simulate streaming with Gemini
-      // In a real implementation, you'd use Gemini's streaming API
       yield ChatStreamEvent.content('Processing your request...');
       
-      // Simulate processing delay
       await Future.delayed(const Duration(seconds: 1));
       
-      // Create a mock itinerary for demonstration
       final mockItinerary = Itinerary(
         title: 'Sample Trip',
         startDate: '2025-01-01',
         endDate: '2025-01-03',
       );
       
-      // Add mock day plan
       final mockDayPlan = DayPlan(
         date: '2025-01-01',
         summary: 'Arrival and exploration',
       );
       
-      // Add mock day items
       mockDayPlan.items.add(DayItem(
         time: '10:00',
         activity: 'Check into hotel',
@@ -197,7 +178,6 @@ class AgentStreamingService {
     }
   }
 
-  /// Process OpenAI streaming response
   Stream<ChatStreamEvent> _processOpenAIStream(Response response) async* {
     try {
       final lines = response.data.toString().split('\n');
@@ -226,7 +206,6 @@ class AgentStreamingService {
               }
             }
           } catch (e) {
-            // Skip invalid JSON lines
             continue;
           }
         }
@@ -236,7 +215,6 @@ class AgentStreamingService {
     }
   }
 
-  /// Build messages for LLM
   List<Map<String, dynamic>> _buildMessages(
     String userInput,
     Itinerary? previousItinerary,
@@ -245,13 +223,11 @@ class AgentStreamingService {
   ) {
     final messages = <Map<String, dynamic>>[];
 
-    // System message
     messages.add({
       'role': 'system',
       'content': _getSystemPrompt(),
     });
 
-    // Chat history
     for (final message in chatHistory.take(10)) {
       messages.add({
         'role': message.type == MessageType.user ? 'user' : 'assistant',
@@ -259,7 +235,6 @@ class AgentStreamingService {
       });
     }
 
-    // Current request
     final requestContent = _buildRequestContent(userInput, previousItinerary, isRefinement);
     messages.add({
       'role': 'user',
@@ -269,7 +244,6 @@ class AgentStreamingService {
     return messages;
   }
 
-  /// Build request content
   String _buildRequestContent(String userInput, Itinerary? previousItinerary, bool isRefinement) {
     final buffer = StringBuffer();
     
@@ -287,7 +261,6 @@ class AgentStreamingService {
     return buffer.toString();
   }
 
-  /// Get system prompt
   String _getSystemPrompt() {
     return '''
 You are a professional travel planner AI assistant. You help users create detailed travel itineraries.
@@ -322,7 +295,6 @@ Always provide a conversational response first, then generate the itinerary.
 ''';
   }
 
-  /// Validate user input
   void _validateInput(String userInput) {
     if (userInput.trim().isEmpty) {
       throw const InvalidItineraryError('User input cannot be empty');
@@ -334,7 +306,6 @@ Always provide a conversational response first, then generate the itinerary.
   }
 }
 
-/// Chat stream event types
 class ChatStreamEvent {
   final ChatStreamEventType type;
   final String? content;

@@ -40,12 +40,10 @@ class AgentService {
     _dio.options.receiveTimeout = const Duration(seconds: 60);
   }
 
-  // Getters for external access
   String? get openaiApiKey => _openaiApiKey;
   String? get geminiApiKey => _geminiApiKey;
   bool get useOpenAI => _useOpenAI;
 
-  /// Generate or refine itinerary with diff tracking
   Future<ItineraryDiffResult> generateItineraryWithDiff({
     required String userInput,
     Itinerary? previousItinerary,
@@ -53,7 +51,6 @@ class AgentService {
     bool isRefinement = false,
   }) async {
     try {
-      // Generate new itinerary
       final newItinerary = await generateItinerary(
         userInput: userInput,
         previousItinerary: previousItinerary,
@@ -61,7 +58,6 @@ class AgentService {
         isRefinement: isRefinement,
       );
 
-      // Create diff if we have a previous itinerary
       ItineraryDiff? diff;
       if (previousItinerary != null) {
         diff = ItineraryDiffEngine.compareItineraries(previousItinerary, newItinerary);
@@ -77,7 +73,6 @@ class AgentService {
     }
   }
 
-  /// Main method to generate or refine itinerary based on user input
   Future<Itinerary> generateItinerary({
     required String userInput,
     Itinerary? previousItinerary,
@@ -85,16 +80,13 @@ class AgentService {
     bool isRefinement = false,
   }) async {
     try {
-      // Validate input
       _validateInput(userInput);
       
-      // Perform web search for real-time information
       Map<String, dynamic> webSearchData = {};
       if (_enableWebSearch) {
         webSearchData = await _performWebSearch(userInput, previousItinerary);
       }
       
-      // Prepare the prompt based on whether it's a new request or refinement
       final prompt = _buildPrompt(
         userInput: userInput,
         previousItinerary: previousItinerary,
@@ -103,12 +95,10 @@ class AgentService {
         webSearchData: webSearchData,
       );
 
-      // Call the appropriate AI service
       final response = _useOpenAI 
           ? await _callOpenAI(prompt)
           : await _callGemini(prompt);
 
-      // Parse and validate the response using JsonValidator
       final validationResult = _parseAndValidateResponse(response, isRefinement);
 
       if (!validationResult.isValid) {
@@ -117,7 +107,6 @@ class AgentService {
 
       final itinerary = validationResult.itinerary!;
 
-      // Enhance itinerary with web search data
       if (webSearchData.isNotEmpty) {
         return _enhanceItineraryWithWebData(itinerary, webSearchData);
       }
@@ -130,7 +119,6 @@ class AgentService {
     }
   }
 
-  /// Build the prompt for AI service
   String _buildPrompt({
     required String userInput,
     Itinerary? previousItinerary,
@@ -152,7 +140,7 @@ class AgentService {
 
     if (chatHistory.isNotEmpty) {
       buffer.writeln('\nCHAT HISTORY:');
-      for (final message in chatHistory.take(10)) { // Limit to last 10 messages
+      for (final message in chatHistory.take(10)) {
         buffer.writeln('${message.type.name.toUpperCase()}: ${message.content}');
       }
     }
@@ -278,7 +266,6 @@ class AgentService {
     return _extractGeminiResponse(response.data);
   }
 
-  /// Extract response from OpenAI API
   Map<String, dynamic> _extractOpenAIResponse(Map<String, dynamic> data) {
     final choices = data['choices'] as List?;
     if (choices == null || choices.isEmpty) {
@@ -307,7 +294,6 @@ class AgentService {
     }
   }
 
-  /// Extract response from Gemini API
   Map<String, dynamic> _extractGeminiResponse(Map<String, dynamic> data) {
     final candidates = data['candidates'] as List?;
     if (candidates == null || candidates.isEmpty) {
@@ -342,7 +328,6 @@ class AgentService {
     }
   }
 
-  /// Parse and validate the AI response using JsonValidator
   ValidationResult _parseAndValidateResponse(Map<String, dynamic> response, bool isRefinement) {
     try {
       String jsonString;
@@ -363,7 +348,6 @@ class AgentService {
         jsonString = content['parts']?[0]?['text'] as String;
       }
 
-      // Use JsonValidator to validate and parse
       return JsonValidator.validateAndParseItinerary(jsonString);
     } catch (e) {
       return ValidationResult.failure(
@@ -373,7 +357,6 @@ class AgentService {
     }
   }
 
-  /// Generate generic regeneration request
   String _generateGenericRegenerationRequest() {
     return '''
 The generated JSON is invalid. Please ensure it follows this exact schema:
@@ -402,7 +385,6 @@ Make sure all required fields are present and have the correct data types.
   }
 
 
-  /// Validate user input
   void _validateInput(String userInput) {
     if (userInput.trim().isEmpty) {
       throw const InvalidItineraryError('User input cannot be empty');
@@ -413,7 +395,6 @@ Make sure all required fields are present and have the correct data types.
     }
   }
 
-  /// Handle Dio errors
   ItineraryError _handleDioError(DioException e) {
     switch (e.response?.statusCode) {
       case 401:
@@ -431,7 +412,6 @@ Make sure all required fields are present and have the correct data types.
     }
   }
 
-  /// Get JSON schema for reference
   String _getJsonSchema() {
     return '''
 {

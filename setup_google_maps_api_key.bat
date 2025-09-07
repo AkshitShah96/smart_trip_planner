@@ -1,41 +1,35 @@
 @echo off
+setlocal ENABLEDELAYEDEXPANSION
 echo ========================================
 echo Google Maps API Key Setup
 echo ========================================
 echo.
-echo To use Google Maps in your Flutter app, you need to:
+echo This will write your API key into android\local.properties and print Web setup.
 echo.
-echo 1. Go to Google Cloud Console: https://console.cloud.google.com/
-echo 2. Create a new project or select existing one
-echo 3. Enable the following APIs:
-echo    - Maps JavaScript API
-echo    - Maps Static API
-echo    - Geocoding API
-echo    - Places API
-echo 4. Create credentials (API Key)
-echo 5. Restrict the API key to your domain (for production)
-echo.
-echo 6. Set the API key as an environment variable:
-echo    set GOOGLE_MAPS_API_KEY=your_api_key_here
-echo.
-echo 7. Or add it to your .env file:
-echo    GOOGLE_MAPS_API_KEY=your_api_key_here
-echo.
-echo 8. Restart your Flutter app
-echo.
-echo ========================================
-echo Current API Key Status:
-echo ========================================
-if defined GOOGLE_MAPS_API_KEY (
-    echo API Key is configured: %GOOGLE_MAPS_API_KEY%
-) else (
-    echo API Key is NOT configured
-    echo Please set GOOGLE_MAPS_API_KEY environment variable
+set /p MAPS_API_KEY=Paste your Google Maps API key: 
+if "%MAPS_API_KEY%"=="" (
+  echo No key entered. Exiting.
+  exit /b 1
 )
-echo.
-echo ========================================
-echo For more help, visit:
-echo https://developers.google.com/maps/documentation/javascript/get-api-key
-echo ========================================
-pause
 
+set "LP=android\local.properties"
+if exist "%LP%.bak" del "%LP%.bak"
+copy /y "%LP%" "%LP%.bak" >nul
+for /f "usebackq delims=" %%L in ("%LP%") do (
+  echo %%L>> "%LP%.tmp"
+)
+findstr /b /c:"MAPS_API_KEY=" "%LP%" >nul
+if %errorlevel%==0 (
+  powershell -NoProfile -Command "(Get-Content '%LP%' -Raw) -replace 'MAPS_API_KEY=.*','MAPS_API_KEY=%MAPS_API_KEY%' | Set-Content '%LP%' -Encoding UTF8"
+) else (
+  echo MAPS_API_KEY=%MAPS_API_KEY%>> "%LP%"
+)
+if exist "%LP%.tmp" del "%LP%.tmp"
+echo.
+echo Android configured. For Web, set env before run:
+echo   set MAPS_API_KEY=%MAPS_API_KEY%
+echo Then run:
+echo   flutter run -d chrome
+echo.
+echo Done.
+endlocal
