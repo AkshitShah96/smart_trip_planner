@@ -283,7 +283,5 @@ The application features a modern, professional interface with:
 - **Smart Notifications**: Context-aware reminders and suggestions
 
 
-## License
 
-This project is licensed under the MIT License. See the LICENSE file for details.
 
